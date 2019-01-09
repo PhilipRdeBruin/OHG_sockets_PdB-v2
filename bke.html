@@ -1,0 +1,83 @@
+<html>
+<head>
+</head>
+    <style>
+        #bke {
+            width:330px;
+            height:330px;
+        }
+        .field {
+            width:100px;
+            height:100px;
+            float:left;
+            border-style: solid;
+            border-width: 5px;
+            cursor:pointer;
+            font-family:Arial;
+            padding:30px;
+            padding-top:20px;
+            font-size:40px;
+            box-sizing:border-box;
+        }
+    </style>
+<body>
+    <div id="bke">
+        <div id="00" class="field" onclick="bkeClick(this)"></div>
+        <div id="01" class="field" onclick="bkeClick(this)"></div>
+        <div id="02" class="field" onclick="bkeClick(this)"></div>
+        <div id="10" class="field" onclick="bkeClick(this)"></div>
+        <div id="11" class="field" onclick="bkeClick(this)"></div>
+        <div id="12" class="field" onclick="bkeClick(this)"></div>
+        <div id="20" class="field" onclick="bkeClick(this)"></div>
+        <div id="21" class="field" onclick="bkeClick(this)"></div>
+        <div id="22" class="field" onclick="bkeClick(this)"></div>
+    </div>
+<script src="ruleset_bke.js"></script>
+<script>
+    
+    function endGame(c) {
+        if(c == "win") {
+            var results = ruleSet()
+            document.getElementById("bke").innerHTML += results[1];
+            document.getElementById(results[2]).style.backgroundColor = "green";
+            document.getElementById(results[3]).style.backgroundColor = "green";
+            document.getElementById(results[4]).style.backgroundColor = "green";
+        } else if(c == "full") {
+            document.getElementById("bke").innerHTML += "Game full, reload page";
+        }
+    }
+
+    function bkeClick(x) {
+        if (!ruleSet(x).length) {
+            if(user=="O"){
+                user="X";
+            } else {
+                user = "O";
+            }
+            var id = x.id;
+                // Submit game change
+            gamestate[id[0]][id[1]] = user;
+                // Here you would get the new game state returned
+                // Code to update local gamestate cache with returned gamestate
+            var nodes = document.getElementById("bke").childNodes;
+            for(i=1;i<(nodes.length);i=i+2) {
+                var y = nodes[i].id;
+                if(gamestate[y[0]][y[1]]){
+                    document.getElementById(y).innerHTML = gamestate[y[0]][y[1]]
+                } else {
+                    document.getElementById(y).innerHTML = "";
+                }
+            }
+            if (ruleSet()[0] == "gameEnd"){
+                endGame("win");
+            } else if (ruleSet()[0] == "gameFull"){
+                endGame("full");
+            }
+        } else {
+            console.log(ruleSet(x));
+        }
+    }
+</script>
+</body>
+
+</html>
