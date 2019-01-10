@@ -22,7 +22,12 @@ function ruleSet(x) {
     } else {
         breaches.push("Used space")
     }
-    // RULE: Win condition
+    return breaches
+}
+
+function winCon() {
+    var breaches = [];
+    // Win condition
     if(gamestate[0][0] == gamestate[0][1] && gamestate[0][1] == gamestate[0][2] && gamestate[0][0] != 0) {
         breaches.push("gameEnd");
         breaches.push("winner = " + user)
@@ -72,11 +77,11 @@ function ruleSet(x) {
         breaches.push("11")
         breaches.push("20")
     }
+    // Game full: End condition
     if(gamestate[0].indexOf(0)>=0 || gamestate[1].indexOf(0)>=0 || gamestate[2].indexOf(0)>=0){
 
     } else {
         breaches.push("gameFull");
     }
-
-    return breaches
+    return breaches;
 }

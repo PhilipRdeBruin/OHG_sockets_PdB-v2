@@ -37,7 +37,7 @@
     
     function endGame(c) {
         if(c == "win") {
-            var results = ruleSet()
+            var results = winCon()
             document.getElementById("bke").innerHTML += results[1];
             document.getElementById(results[2]).style.backgroundColor = "green";
             document.getElementById(results[3]).style.backgroundColor = "green";
@@ -68,9 +68,9 @@
                     document.getElementById(y).innerHTML = "";
                 }
             }
-            if (ruleSet()[0] == "gameEnd"){
+            if (winCon()[0] == "gameEnd"){
                 endGame("win");
-            } else if (ruleSet()[0] == "gameFull"){
+            } else if (winCon()[0] == "gameFull"){
                 endGame("full");
             }
         } else {
