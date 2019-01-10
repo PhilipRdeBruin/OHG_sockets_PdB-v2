@@ -1,25 +1,36 @@
 var app = require('express')();
+var mysql = require('mysql');
 var http = require('http').Server(app);
-
 var io = require('socket.io')(http);
 
-app.get('/1', function(req, res){
-  res.sendFile(__dirname + '/index.html');
-});
-
+var db = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    database: 'ohg'
+})
 
 io.on('connection', function(socket){
     socket.on('set game', function(game){
         console.log("game set: " + game)
         // Gets join room request
         socket.on('join room', function(room){
+            var gamestate = [];
             room = game + room;
             socket.join(room)
             console.log('user connected to room: ' + room);
+
+            db.query('SELECT gamestate FROM bke WHERE id=1')
+            .on('result', function(data){
+                // Push results onto the notes array
+                gamestate = JSON.parse(data['gamestate']);
+                io.to(room).emit('game state', gamestate);
+            })
+
+
             // Gets chat message
-            socket.on('chat message', function(msg){
+            socket.on('game input', function(msg){
                 console.log('message in room ' + room + ': ' + msg);
-                io.to(room).emit('chat message', msg);
+                io.to(room).emit('game msg', msg);
             });
         });
     });
