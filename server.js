@@ -40,13 +40,8 @@ io.on('connection', function(socket){
                 .on('end', function(){
                 var ruleSet = require ('./rules_' + game + '.js');
                 ruleSet.testingGame(gamestate);
-                var newState = ruleSet.gameMove(gamestate, msg);
-                var nSDB = JSON.stringify(newState);
-                db.query(`UPDATE bke SET gamestate = '${nSDB}' WHERE id=${rId}`)
-                console.log('message in room ' + room + ': ' + msg);
-                io.to(room).emit('game msg', msg);
+                ruleSet.gameMove(gamestate, msg, db, room, io);               
                 delete require.cache[require.resolve('./rules_' + game + '.js')];
-                io.to(room).emit('game state', newState);
                 });                
             });
         });

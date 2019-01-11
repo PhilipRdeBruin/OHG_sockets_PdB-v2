@@ -7,9 +7,11 @@ console.log("executing BKE ruleset");
 function randomUser(){
     var r = Math.random();
     if(r<0.5) {
-        return "O";
+        user = 1;
+        gUser = "O";
     } else {
-        return "X";
+        user = 2;
+        gUser = "X";
     }
 }
 exports.testingGame = function (x) {
@@ -17,11 +19,53 @@ exports.testingGame = function (x) {
 }
 
     // First user
-var user = randomUser();
+var user = 0
+var gUser = ""
 
-exports.gameMove = function (gamestate, msg) {
-    gamestate[msg[0]][msg[1]] = user;
-    return gamestate;
+exports.gameMove = function (gamestate, msg, db, room, io) {
+    db.query('SELECT user FROM bke WHERE id=1')
+    .on('result', function(data){
+        user = JSON.parse(data['user']);
+        console.log('user from database: ' + user)
+    })
+    .on('end', function(){
+        console.log("user before if: " + user)
+        if(user == 0){
+            console.log("random user")
+            randomUser();
+        } else if (user == 1){
+            console.log("u was 1")
+            user = 2;
+            gUser = "X";
+        } else {
+            console.log("user else")
+            user = 1;
+            gUser = "O";
+        }
+        console.log("user after if: " + user)
+        db.query(`UPDATE bke SET user = '${user}' WHERE id=1`)
+        gamestate[msg[0]][msg[1]] = gUser;
+        var nSDB = JSON.stringify(gamestate);
+        db.query(`UPDATE bke SET gamestate = '${nSDB}' WHERE id=1`)
+        console.log('message in room ' + room + ': ' + msg);
+ 
+        io.to(room).emit('game state', gamestate);
+        if(winCon(gamestate).indexOf("gameFull")>=0){
+            io.to(room).emit('game msg', '00');
+            io.to(room).emit('game msg', '01');
+            io.to(room).emit('game msg', '02');
+            io.to(room).emit('game msg', '10');
+            io.to(room).emit('game msg', '11');
+            io.to(room).emit('game msg', '12');
+            io.to(room).emit('game msg', '20');
+            io.to(room).emit('game msg', '21');
+            io.to(room).emit('game msg', '22');
+        } else if(winCon(gamestate).indexOf("gameEnd")>=0){
+            io.to(room).emit('game msg', winCon(gamestate)[2]);
+            io.to(room).emit('game msg', winCon(gamestate)[3]);
+            io.to(room).emit('game msg', winCon(gamestate)[4]);
+        }
+    })
 }
 
 function ruleSet(x) {
@@ -35,7 +79,7 @@ function ruleSet(x) {
     return breaches
 }
 
-function winCon() {
+function winCon(gamestate) {
     var breaches = [];
     // Win condition
     if(gamestate[0][0] == gamestate[0][1] && gamestate[0][1] == gamestate[0][2] && gamestate[0][0] != 0) {

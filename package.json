@@ -1,6 +1,6 @@
 {
   "name": "OHG-backend-server",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Backend to play realtime boardgames over the internet",
   "dependencies": {
     "express": "^4.16.4",
