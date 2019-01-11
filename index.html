@@ -35,13 +35,13 @@
         <div id="22" class="field" onclick="bkeClick(this)"></div>
     </div>
     <ul id="messages"></ul>
-    <script src="http://localhost:3000/socket.io/socket.io.js"></script>
+    <script src="http://192.168.2.175:3000/socket.io/socket.io.js"></script>
     <script>
         var lh = location.hash.split('#')[1];
         var lhValues = lh.split('&');
         var room = lhValues[1];
         var game = lhValues[0];
-        var socket = io('http://localhost:3000');
+        var socket = io('http://192.168.2.175:3000');
         console.log(game);
         socket.emit('set game', game);
         console.log(room);
