@@ -6,7 +6,6 @@ console.log("executing BKE ruleset");
 
 function randomUser(){
     var r = Math.random();
-    console.log(r);
     if(r<0.5) {
         return "O";
     } else {
@@ -18,10 +17,10 @@ exports.testingGame = function (x) {
 }
 
     // First user
-//var user = randomUser();
+var user = randomUser();
 
 exports.gameMove = function (gamestate, msg) {
-    gamestate[msg[0]][msg[1]] = 'X';
+    gamestate[msg[0]][msg[1]] = user;
     return gamestate;
 }
 
