@@ -2,7 +2,7 @@ var app = require('express')();
 var mysql = require('mysql');
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
-
+var gamesAvailable = ['bke'];
 var db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
@@ -15,22 +15,39 @@ io.on('connection', function(socket){
         // Gets join room request
         socket.on('join room', function(room){
             var gamestate = [];
+            var rId = room;
             room = game + room;
             socket.join(room)
             console.log('user connected to room: ' + room);
-
-            db.query('SELECT gamestate FROM bke WHERE id=1')
+            db.query('SELECT gamestate FROM '+ game + ' WHERE id='+ rId)
             .on('result', function(data){
-                // Push results onto the notes array
                 gamestate = JSON.parse(data['gamestate']);
-                io.to(room).emit('game state', gamestate);
             })
+            .on('end', function(){
+            io.to(room).emit('game state', gamestate);
+            });
 
-
-            // Gets chat message
+            // Gets game input
             socket.on('game input', function(msg){
+                if(gamesAvailable.indexOf(game)<0) {
+                    game = "default"
+                }
+                console.log(msg);
+                db.query(`SELECT gamestate FROM ${game} WHERE id=${rId}`)
+                .on('result', function(data){
+                    gamestate = JSON.parse(data['gamestate']);
+                })
+                .on('end', function(){
+                var ruleSet = require ('./rules_' + game + '.js');
+                ruleSet.testingGame(gamestate);
+                var newState = ruleSet.gameMove(gamestate, msg);
+                var nSDB = JSON.stringify(newState);
+                db.query(`UPDATE bke SET gamestate = '${nSDB}' WHERE id=${rId}`)
                 console.log('message in room ' + room + ': ' + msg);
                 io.to(room).emit('game msg', msg);
+                delete require.cache[require.resolve('./rules_' + game + '.js')];
+                io.to(room).emit('game state', newState);
+                });                
             });
         });
     });

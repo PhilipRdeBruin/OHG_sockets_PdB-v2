@@ -61,6 +61,7 @@
                 // Here you would get the new game state returned
                 // Code to update local gamestate cache with returned gamestate
             var nodes = document.getElementById("bke").childNodes;
+            console.log(nodes);
             for(i=1;i<(nodes.length);i=i+2) {
                 var y = nodes[i].id;
                 if(gamestate[y[0]][y[1]]){
