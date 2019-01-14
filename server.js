@@ -3,6 +3,7 @@ var mysql = require('mysql');
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var gamesAvailable = ['bke'];
+var globalGameState = [];
 var db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
