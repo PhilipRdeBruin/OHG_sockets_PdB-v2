@@ -3,7 +3,7 @@ var mysql = require('mysql');
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 // Games Available Template = Game Name: [Player Count, Initial Game State, Extra player input per turn]
-var gamesAvailable = { bke: [2, [[0,0,0],[0,0,0],[0,0,0]], 0], example: []};
+var gamesAvailable = { bke: [2, [[0,0,0],[0,0,0],[0,0,0], 0], 0], example: []};
 var globalGameState = [];
 var db = mysql.createConnection({
     host: 'localhost',
@@ -61,16 +61,17 @@ io.on('connection', function(socket){
     socket.on('game move', function(move){
         room = Object.keys(io.sockets.adapter.sids[socket.id])[1];
         if(globalGameState[room]["users"][globalGameState[room]["active"]] == socket.username) {
-            console.log('game move: ' + move);
-            globalGameState[room]['gamestate'] += move;
-            console.log(globalGameState[room]['gamestate']);
+
+            // GAME SPECIFIC MOVE
+            var ruleSet = require ('./rules_' + globalGameState[room]['game'] + '.js');
+            ruleSet.gameMove(globalGameState, room, move);   
             console.log("by: " + socket.username);
+            io.to(room).emit('game state', globalGameState[room]['gamestate']);
 
             // END OF MOVE - SWAP PLAYER
             if (globalGameState[room]['count'] <gamesAvailable[globalGameState[room]['game']][2]) {
                 globalGameState[room]['count']++
-            }
-            else {
+            } else {
                 globalGameState[room]['count'] = 0;
                 socket.emit('game turn', 0);
                 if (globalGameState[room]["active"] < (globalGameState[room]["users"].length - 1)) {
@@ -84,6 +85,12 @@ io.on('connection', function(socket){
                 console.log(sendTo);
                 io.to(`${sendTo}`).emit('game turn', 1);
             }
+            if (globalGameState[room]["gamestate"][3][0] == "gameEnd"){
+                globalGameState[room]['active'] = -1;
+                io.to(room).emit('game turn', 2);
+                ruleSet.gameEnd(socket, room, globalGameState);
+            }
+            delete require.cache[require.resolve('./rules_' + globalGameState[room]['game'] + '.js')]; 
         }
     });
     // DISCONNECT
