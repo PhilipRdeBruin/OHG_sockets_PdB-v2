@@ -2,8 +2,8 @@ var app = require('express')();
 var mysql = require('mysql');
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
-// Games Available Template = Game Name: [Player Count, Initial Game State]
-var gamesAvailable = { bke: [2, [[0,0,0],[0,0,0],[0,0,0]]], example: []};
+// Games Available Template = Game Name: [Player Count, Initial Game State, Extra player input per turn]
+var gamesAvailable = { bke: [2, [[0,0,0],[0,0,0],[0,0,0]], 0], example: []};
 var globalGameState = [];
 var db = mysql.createConnection({
     host: 'localhost',
@@ -14,7 +14,6 @@ var connectedUsers = [];
 
 function randomUser(amount) {
     return Math.floor(Math.random() * amount)
-
 }
 
 // USER CONNECT
@@ -34,12 +33,13 @@ io.on('connection', function(socket){
         if(globalGameState[room] == null){
             globalGameState[room] = [];
             globalGameState[room]['users'] = [];
+            globalGameState[room]['count'] = 0;
             globalGameState[room]['gamestate'] = gamesAvailable[gData.game][1];
+            globalGameState[room]['game'] = gData.game;
             console.log("init: " + globalGameState[room]['gamestate']);
             console.log("test: " + globalGameState[room]['gamestate'][1][1])
         } else if(globalGameState[room]["active"] != null){
                 var sendTo = connectedUsers[globalGameState[room]["users"][globalGameState[room]["active"]]];
-                console.log(sendTo);
                 io.to(`${sendTo}`).emit('game turn', 1);
         }
         // SET UP INITIAL USERS
@@ -47,15 +47,11 @@ io.on('connection', function(socket){
             if(globalGameState[room]['users'].indexOf(gData.user) < 0) {
                console.log("user not found, adding: " + gData.user);
                globalGameState[room]['users'].push(gData.user);
-            } else {
-            console.log("continuing with users: " + globalGameState[room]['users'])
             }
             if (globalGameState[room]['users'].length == playerAmount){
                 globalGameState[room]["active"] = randomUser(playerAmount);
-                console.log(globalGameState[room]["active"]);
                 console.log("full! starting game with users: " + globalGameState[room]['users']);
                 var sendTo = connectedUsers[globalGameState[room]["users"][globalGameState[room]["active"]]];
-                console.log(sendTo);
                 io.to(`${sendTo}`).emit('game turn', 1);
             }
         }
@@ -69,18 +65,25 @@ io.on('connection', function(socket){
             globalGameState[room]['gamestate'] += move;
             console.log(globalGameState[room]['gamestate']);
             console.log("by: " + socket.username);
-            socket.emit('game turn', 0);
-            if (globalGameState[room]["active"] < (globalGameState[room]["users"].length - 1)) {
-                console.log("+1");
-                globalGameState[room]["active"]++
-            } else {
-                console.log("to 0");
-                globalGameState[room]["active"] = 0;
+
+            // END OF MOVE - SWAP PLAYER
+            if (globalGameState[room]['count'] <gamesAvailable[globalGameState[room]['game']][2]) {
+                globalGameState[room]['count']++
             }
-            var sendTo = connectedUsers[globalGameState[room]["users"][globalGameState[room]["active"]]];
-            console.log(sendTo);
-            io.to(`${sendTo}`).emit('game turn', 1);
-        
+            else {
+                globalGameState[room]['count'] = 0;
+                socket.emit('game turn', 0);
+                if (globalGameState[room]["active"] < (globalGameState[room]["users"].length - 1)) {
+                    console.log("+1");
+                    globalGameState[room]["active"]++
+                } else {
+                    console.log("to 0");
+                    globalGameState[room]["active"] = 0;
+                }
+                var sendTo = connectedUsers[globalGameState[room]["users"][globalGameState[room]["active"]]];
+                console.log(sendTo);
+                io.to(`${sendTo}`).emit('game turn', 1);
+            }
         }
     });
     // DISCONNECT
