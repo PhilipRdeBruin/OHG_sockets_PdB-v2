@@ -2,28 +2,33 @@ console.log("executing BKE ruleset");
 
 exports.gameMove = function (globalGameState, room, move) {
     var player;
-    var gamestate = globalGameState[room]["gamestate"];
+    var gamestate = JSON.parse(globalGameState[room]["gamestate"]);
     if (globalGameState[room]["active"] == 0) {
         player = "O"
     } else {
         player = "X"
     }
     if(ruleSet(move, gamestate)){
-        globalGameState[room]["gamestate"][move[0]][move[1]] = player;
+        gamestate[move[0]][move[1]] = player;
+        
     } else {
         globalGameState[room]["count"]--
     }
-    globalGameState[room]["gamestate"][3] = winCon(globalGameState[room]["gamestate"], globalGameState[room]["active"]);
+    gamestate[3] = winCon(gamestate, globalGameState[room]["active"]);
+    gamestate = JSON.stringify(gamestate);
+    globalGameState[room]["gamestate"] = gamestate;
+    delete player;
+    delete gamestate;
 }
 
 exports.gameEnd = function (socket, room, globalGameState) {
-    socket.to(room).emit('game loss', globalGameState[room]["gamestate"][3][2]);
-    socket.to(room).emit('game loss', globalGameState[room]["gamestate"][3][3]);
-    socket.to(room).emit('game loss', globalGameState[room]["gamestate"][3][4]);
+    socket.to(room).emit('game loss', JSON.parse(globalGameState[room]["gamestate"])[3][2]);
+    socket.to(room).emit('game loss', JSON.parse(globalGameState[room]["gamestate"])[3][3]);
+    socket.to(room).emit('game loss', JSON.parse(globalGameState[room]["gamestate"])[3][4]);
 
-    socket.emit('game win', globalGameState[room]["gamestate"][3][2]);
-    socket.emit('game win', globalGameState[room]["gamestate"][3][3]);
-    socket.emit('game win', globalGameState[room]["gamestate"][3][4]);
+    socket.emit('game win', JSON.parse(globalGameState[room]["gamestate"])[3][2]);
+    socket.emit('game win', JSON.parse(globalGameState[room]["gamestate"])[3][3]);
+    socket.emit('game win', JSON.parse(globalGameState[room]["gamestate"])[3][4]);
 }
 
 function ruleSet(move, gamestate) {

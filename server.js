@@ -3,7 +3,7 @@ var mysql = require('mysql');
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 // Games Available Template = Game Name: [Player Count, Initial Game State, Extra player input per turn]
-var gamesAvailable = { bke: [2, [[0,0,0],[0,0,0],[0,0,0], 0], 0], example: []};
+var gamesAvailable = { bke: [2, "[[0,0,0],[0,0,0],[0,0,0], 0]", 0], example: []};
 var globalGameState = [];
 var db = mysql.createConnection({
     host: 'localhost',
@@ -23,6 +23,7 @@ io.on('connection', function(socket){
     socket.on('join room', function(gData){
         connectedUsers[gData.user] = socket.id;
         var room = gData.game + gData.room;
+        socket["room"] = room;
         var playerAmount = gamesAvailable[gData.game][0];
         socket.join(room);
         console.log("room: " + gData.room);
@@ -37,13 +38,13 @@ io.on('connection', function(socket){
             globalGameState[room]['gamestate'] = gamesAvailable[gData.game][1];
             globalGameState[room]['game'] = gData.game;
             console.log("init: " + globalGameState[room]['gamestate']);
-            console.log("test: " + globalGameState[room]['gamestate'][1][1])
+            console.log("test: " + JSON.parse(globalGameState[room]['gamestate']));
         } else if(globalGameState[room]["active"] != null){
                 var sendTo = connectedUsers[globalGameState[room]["users"][globalGameState[room]["active"]]];
                 io.to(`${sendTo}`).emit('game turn', 1);
         } 
         if(globalGameState[room] != null) {
-            io.to(room).emit('game state', globalGameState[room]['gamestate']);
+            io.to(room).emit('game state', JSON.parse(globalGameState[room]['gamestate']));
             if (globalGameState[room]["gamestate"][3][0] == "gameEnd"){
                 io.to(room).emit('game turn', 2);
             }
@@ -65,14 +66,16 @@ io.on('connection', function(socket){
 
     // PROCESS GAME MOVE
     socket.on('game move', function(move){
-        room = Object.keys(io.sockets.adapter.sids[socket.id])[1];
+        room = socket.room;
         if(globalGameState[room]["users"][globalGameState[room]["active"]] == socket.username) {
 
             // GAME SPECIFIC MOVE
             var ruleSet = require ('./rules_' + globalGameState[room]['game'] + '.js');
-            ruleSet.gameMove(globalGameState, room, move);   
+            ruleSet.gameMove(globalGameState, room, move);  
+            delete require.cache[require.resolve('./rules_' + globalGameState[room]['game'] + '.js')];
+            delete ruleSet; 
             console.log("by: " + socket.username);
-            io.to(room).emit('game state', globalGameState[room]['gamestate']);
+            io.to(room).emit('game state', JSON.parse(globalGameState[room]['gamestate']));
             console.log(globalGameState["bke1"]);
             console.log(globalGameState["bke2343"]);
 
@@ -93,12 +96,16 @@ io.on('connection', function(socket){
                 console.log(sendTo);
                 io.to(`${sendTo}`).emit('game turn', 1);
             }
-            if (globalGameState[room]["gamestate"][3][0] == "gameEnd"){
+            if (JSON.parse(globalGameState[room]["gamestate"])[3][0] == "gameEnd"){
                 globalGameState[room]['active'] = -1;
                 io.to(room).emit('game turn', 2);
-                ruleSet.gameEnd(socket, room, globalGameState);
+                
+                var ruleSet = require ('./rules_' + globalGameState[room]['game'] + '.js');
+                ruleSet.gameEnd(socket, room, globalGameState); 
+                delete require.cache[require.resolve('./rules_' + globalGameState[room]['game'] + '.js')];
+                delete ruleSet; 
             }
-            delete require.cache[require.resolve('./rules_' + globalGameState[room]['game'] + '.js')]; 
+            
         }
     });
     // DISCONNECT
