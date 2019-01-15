@@ -41,6 +41,12 @@ io.on('connection', function(socket){
         } else if(globalGameState[room]["active"] != null){
                 var sendTo = connectedUsers[globalGameState[room]["users"][globalGameState[room]["active"]]];
                 io.to(`${sendTo}`).emit('game turn', 1);
+        } 
+        if(globalGameState[room] != null) {
+            io.to(room).emit('game state', globalGameState[room]['gamestate']);
+            if (globalGameState[room]["gamestate"][3][0] == "gameEnd"){
+                io.to(room).emit('game turn', 2);
+            }
         }
         // SET UP INITIAL USERS
         if(globalGameState[room]['users'].length < playerAmount) {
@@ -67,9 +73,11 @@ io.on('connection', function(socket){
             ruleSet.gameMove(globalGameState, room, move);   
             console.log("by: " + socket.username);
             io.to(room).emit('game state', globalGameState[room]['gamestate']);
+            console.log(globalGameState["bke1"]);
+            console.log(globalGameState["bke2343"]);
 
             // END OF MOVE - SWAP PLAYER
-            if (globalGameState[room]['count'] <gamesAvailable[globalGameState[room]['game']][2]) {
+            if (globalGameState[room]['count'] < gamesAvailable[globalGameState[room]['game']][2]) {
                 globalGameState[room]['count']++
             } else {
                 globalGameState[room]['count'] = 0;
@@ -106,6 +114,3 @@ io.on('connection', function(socket){
 http.listen(3000, function(){
   console.log('listening on *:3000');
 });
-
-
-
