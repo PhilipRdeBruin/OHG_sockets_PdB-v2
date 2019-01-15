@@ -23,6 +23,7 @@
     </style>
 </head>
 <body>
+    <h1 id="turns">Waiting for turn...</h1>
     <div id="bke">
         <div id="00" class="field" onclick="bkeClick(this)"></div>
         <div id="01" class="field" onclick="bkeClick(this)"></div>
@@ -40,12 +41,11 @@
         var lh = location.hash.split('#')[1];
         var lhValues = lh.split('&');
         var room = lhValues[1];
+        var user = lhValues[2];
         var game = lhValues[0];
         var socket = io('http://192.168.2.175:3000');
-        console.log(game);
-        socket.emit('set game', game);
-        console.log(room);
-        socket.emit('join room', room);
+        var gameData = {room: room, game: game, user: user};
+        socket.emit('join room', gameData);
         socket.on('game msg', function(msg){
             var node = document.createElement("LI");
             var textnode = document.createTextNode(msg);    
@@ -64,9 +64,16 @@
                 }
             }
         });
+        socket.on('game turn', function(turn){
+            if(turn){
+                document.getElementById("turns").innerHTML = "Make a move!"
+            } else {
+                document.getElementById("turns").innerHTML = "Waiting for turn.."
+            }
+        });
         function bkeClick(x) {
             var id = x.id;
-            socket.emit('game input', id)
+            socket.emit('game move', id)
         };
     </script>
 </body>
