@@ -18,6 +18,7 @@ exports.gameMove = function(globalGameState, room, move) {
 }
 
 exports.gameEnd = function(socket, room, globalGameState, server) {
+    globalGameState[room]["winner"] = "" // SET WINNER NAME HERE FOR DATABASE BACKUP
     // This gets executed when globalGameState[room]["result"][0] === "gameEnd", use this to send data to user, eg: winner, etc
 }
 

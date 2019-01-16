@@ -22,6 +22,7 @@ exports.gameMove = function(globalGameState, room, move) {
 }
 
 exports.gameEnd = function(socket, room, globalGameState, server) {
+    globalGameState[room]["winner"] = socket.username;
     if(globalGameState[room]["active"] === -1) {
         server.in(room).emit('game result', globalGameState[room]["result"][2]);
         server.in(room).emit('game result', globalGameState[room]["result"][3]);

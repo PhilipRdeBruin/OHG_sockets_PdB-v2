@@ -85,6 +85,23 @@ server.on('connection', function(socket) {
                 // RETURN GAMESTATE TO ALL USERS IN ROOM
                 server.to(room).emit('game state', JSON.parse(globalGameState[room]['gamestate']));
 
+                // BACKUP GAME STATE TO DATABASE
+                var dbData = false;
+                db.query(`SELECT id FROM ${socket.game} WHERE room = "${room}"`)
+                .on('result', function(data){
+                    dbData = data;
+                })
+                .on('end', function(){
+                    console.log("dbData: " + dbData)
+                    if(dbData){
+                        console.log("room found in database, updating");
+                        db.query(`UPDATE ${socket.game} SET gamestate = '${globalGameState[room]['gamestate']}' WHERE room = "${room}"`)
+                    } else {
+                        console.log("room NOT found in database, creating");
+                        db.query(`INSERT INTO ${socket.game} (room, gamestate, winner) VALUES ("${room}", '${globalGameState[room]['gamestate']}', 0)`); 
+                    }
+                })
+
                 // END OF MOVE - SWAP PLAYER
                 if (globalGameState[room]['count'] < gamesAvailable[globalGameState[room]['game']][2]) {
                     globalGameState[room]['count']++
@@ -103,6 +120,7 @@ server.on('connection', function(socket) {
                 if (globalGameState[room]["result"][0] == "gameEnd") {
                     server.to(room).emit('game turn', 2);
                     ruleSet.gameEnd(socket, room, globalGameState, server);
+                    db.query(`UPDATE ${socket.game} SET winner = '${globalGameState[room]["winner"]}' WHERE room = "${room}"`);
                     globalGameState[room]['active'] = -1;
                     console.log("game in room '" + room + "' ended");
                 }
