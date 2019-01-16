@@ -17,8 +17,6 @@ exports.gameMove = function(globalGameState, room, move) {
     gamestate[3] = winCon(gamestate, globalGameState[room]["active"]);
     gamestate = JSON.stringify(gamestate);
     globalGameState[room]["gamestate"] = gamestate;
-    delete player;
-    delete gamestate;
 }
 
 exports.gameEnd = function(socket, room, globalGameState) {
