@@ -13,8 +13,8 @@ var db = mysql.createConnection({
 // GAME SERVER VARIABLES & FUNCTIONS
 // Games Available Template = Game Name: [Player Count, Initial Game State, Extra player input per turn]
 var gamesAvailable = {
-    bke: [2, "[[0,0,0],[0,0,0],[0,0,0], 0]", 0],
-    example: []
+    bke: [2, "[[0,0,0],[0,0,0],[0,0,0]]", 0],
+    template: [2, "[]", 0]
 };
 var globalGameState = [];
 var connectedUsers = [];
@@ -43,14 +43,18 @@ server.on('connection', function(socket) {
                 globalGameState[room]['count'] = 0;
                 globalGameState[room]['gamestate'] = gamesAvailable[gData.game][1];
                 globalGameState[room]['game'] = gData.game;
+                globalGameState[room]['result'] = [];
             } else if (globalGameState[room]["active"] != null) {
                 var sendTo = connectedUsers[globalGameState[room]["users"][globalGameState[room]["active"]]];
                 server.to(`${sendTo}`).emit('game turn', 1);
             }
             if (globalGameState[room] != null) {
                 server.to(room).emit('game state', JSON.parse(globalGameState[room]['gamestate']));
-                if (globalGameState[room]["gamestate"][3][0] == "gameEnd") {
+                if (globalGameState[room]["result"][0] == "gameEnd") {
                     server.to(room).emit('game turn', 2);
+                    var ruleSet = require('./rules_' + globalGameState[room]['game'] + '.js');
+                    ruleSet.gameEnd(socket, room, globalGameState, server);
+                    delete require.cache[require.resolve('./rules_' + globalGameState[room]['game'] + '.js')];
                 }
             }
             // SET UP INITIAL USERS
@@ -60,7 +64,7 @@ server.on('connection', function(socket) {
                 }
                 if (globalGameState[room]['users'].length == playerAmount) {
                     globalGameState[room]["active"] = randomUser(playerAmount);
-                    console.log("game full, room '" + room + "' started with players: " + globalGameState[room]['users']);
+                    console.log("game full, room '" + room + "' started with players: " + globalGameState[room]['users'] + ", starting player: " + globalGameState[room]["active"]);
                     var sendTo = connectedUsers[globalGameState[room]["users"][globalGameState[room]["active"]]];
                     server.to(`${sendTo}`).emit('game turn', 1);
                 }
@@ -77,8 +81,10 @@ server.on('connection', function(socket) {
                 // GAME SPECIFIC MOVE
                 var ruleSet = require('./rules_' + globalGameState[room]['game'] + '.js');
                 ruleSet.gameMove(globalGameState, room, move);
+
+                // RETURN GAMESTATE TO ALL USERS IN ROOM
                 server.to(room).emit('game state', JSON.parse(globalGameState[room]['gamestate']));
-                
+
                 // END OF MOVE - SWAP PLAYER
                 if (globalGameState[room]['count'] < gamesAvailable[globalGameState[room]['game']][2]) {
                     globalGameState[room]['count']++
@@ -93,11 +99,12 @@ server.on('connection', function(socket) {
                     var sendTo = connectedUsers[globalGameState[room]["users"][globalGameState[room]["active"]]];
                     server.to(`${sendTo}`).emit('game turn', 1);
                 }
-                if (JSON.parse(globalGameState[room]["gamestate"])[3][0] == "gameEnd") {
-                    globalGameState[room]['active'] = -1;
+                // DETECT GAME ENDING
+                if (globalGameState[room]["result"][0] == "gameEnd") {
                     server.to(room).emit('game turn', 2);
-                    console.log("game in room '" + room + "' ended")
-                    ruleSet.gameEnd(socket, room, globalGameState);
+                    ruleSet.gameEnd(socket, room, globalGameState, server);
+                    globalGameState[room]['active'] = -1;
+                    console.log("game in room '" + room + "' ended");
                 }
                 delete require.cache[require.resolve('./rules_' + globalGameState[room]['game'] + '.js')];
             }

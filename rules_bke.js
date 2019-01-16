@@ -1,4 +1,6 @@
-console.log("executing BKE ruleset");
+//
+// BOTER, KAAS EN EIEREN RULESET
+//
 
 exports.gameMove = function(globalGameState, room, move) {
     var player;
@@ -14,19 +16,26 @@ exports.gameMove = function(globalGameState, room, move) {
     } else {
         globalGameState[room]["count"]--
     }
-    gamestate[3] = winCon(gamestate, globalGameState[room]["active"]);
+    globalGameState[room]["result"] = winCon(gamestate, globalGameState[room]["active"]);
     gamestate = JSON.stringify(gamestate);
     globalGameState[room]["gamestate"] = gamestate;
 }
 
-exports.gameEnd = function(socket, room, globalGameState) {
-    socket.to(room).emit('game loss', JSON.parse(globalGameState[room]["gamestate"])[3][2]);
-    socket.to(room).emit('game loss', JSON.parse(globalGameState[room]["gamestate"])[3][3]);
-    socket.to(room).emit('game loss', JSON.parse(globalGameState[room]["gamestate"])[3][4]);
+exports.gameEnd = function(socket, room, globalGameState, server) {
+    if(globalGameState[room]["active"] === -1) {
+        server.in(room).emit('game result', globalGameState[room]["result"][2]);
+        server.in(room).emit('game result', globalGameState[room]["result"][3]);
+        server.in(room).emit('game result', globalGameState[room]["result"][4]);
+        
+    } else {
+        socket.to(room).emit('game loss', globalGameState[room]["result"][2]);
+        socket.to(room).emit('game loss', globalGameState[room]["result"][3]);
+        socket.to(room).emit('game loss', globalGameState[room]["result"][4]);
 
-    socket.emit('game win', JSON.parse(globalGameState[room]["gamestate"])[3][2]);
-    socket.emit('game win', JSON.parse(globalGameState[room]["gamestate"])[3][3]);
-    socket.emit('game win', JSON.parse(globalGameState[room]["gamestate"])[3][4]);
+        socket.emit('game win', globalGameState[room]["result"][2]);
+        socket.emit('game win', globalGameState[room]["result"][3]);
+        socket.emit('game win', globalGameState[room]["result"][4]);
+    }
 }
 
 function ruleSet(move, gamestate) {

@@ -51,7 +51,9 @@
         });
         socket.on('game loss', function(msg){
             document.getElementById(msg).style.backgroundColor = "red";
-            console.log(msg);
+        });
+        socket.on('game result', function(msg){
+            document.getElementById(msg).style.backgroundColor = "grey";
         });
         socket.on('game state', function(gamestate){
             var nodes = document.getElementById("bke").childNodes;
