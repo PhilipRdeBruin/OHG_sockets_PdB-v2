@@ -14,7 +14,8 @@ var db = mysql.createConnection({
 // Games Available Template = Game Name: [Player Count, Initial Game State, Extra player input per turn]
 var gamesAvailable = {
     bke: [2, "[[0,0,0],[0,0,0],[0,0,0]]", 0],
-    template: [2, "[]", 0]
+    mastermind: [2, '[[],[],[]]', 0],
+    template: [2, "[[],[],[]]", 0]
 };
 var globalGameState = [];
 var connectedUsers = [];
@@ -42,6 +43,7 @@ server.on('connection', function(socket) {
                 globalGameState[room]['users'] = [];
                 globalGameState[room]['count'] = 0;
                 globalGameState[room]['gamestate'] = gamesAvailable[gData.game][1];
+                console.log(globalGameState[room]['gamestate']);
                 globalGameState[room]['game'] = gData.game;
                 globalGameState[room]['result'] = [];
             } else if (globalGameState[room]["active"] != null) {

@@ -3,6 +3,7 @@
 //
 
 exports.gameMove = function(globalGameState, room, move) {
+    console.log(move);
     var player;
     var gamestate = JSON.parse(globalGameState[room]["gamestate"]);
     if (globalGameState[room]["active"] == 0) {
