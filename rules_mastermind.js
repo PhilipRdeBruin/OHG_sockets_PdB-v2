@@ -14,6 +14,7 @@ exports.gameMove = function(globalGameState, room, move) {
     // globalGameState[room]["result"] = winCon(gamestate, currentPLayer);
 
     // SUBMIT new gamestate
+    
     gamestate = JSON.stringify(gamestate);
     globalGameState[room]["gamestate"] = gamestate;
 }

@@ -75,6 +75,9 @@
                 document.getElementById("turns").innerHTML = "Game ended"
             }
         });
+        socket.on('test', function(msg){
+            console.log(msg);
+        });
         function bkeClick(x) {
             var id = x.id;
             socket.emit('game move', id)
