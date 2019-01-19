@@ -13,8 +13,9 @@ var db = mysql.createConnection({
 // GAME SERVER VARIABLES & FUNCTIONS
 // Games Available Template = Game Name: [Player Count, Initial Game State, Extra player input per turn]
 var gamesAvailable = {
-    bke: [2, "[[0,0,0],[0,0,0],[0,0,0]]", 0],
-    mastermind: [2, '[[],[],[]]', 0],
+    bke: [2, '[[0,0,0],[0,0,0],[0,0,0]]', 0],
+    mastermind: [2, '[]', 0],
+    chess: [2, '\"init\"', 0],
     template: [2, "[[],[],[]]", 0]
 };
 var globalGameState = [];
