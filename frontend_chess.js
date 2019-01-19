@@ -41,18 +41,26 @@ function init(){
 }
 
 function renderGame(gamestate){
-    var nodes = document.getElementById("chess").childNodes;
-    console.log(nodes);
-    for(i=1;i<(nodes.length);i=i+2) {
-        var y = nodes[i].id;
-        if(gamestate[y[0]][y[1]]){
-            var unicode = gamestate[y[0]][y[1]].unicode;
-            if (!gamestate[y[0]][y[1]].color) {
-                unicode += 6;
+    if(gamestate[0][0].white !== user && gamestate[0][0].white !== "player") {
+        document.getElementById("chess").style.transform = "rotate(180deg)";
+        var fields = document.getElementsByClassName("field");
+        for(i=0;i<fields.length;i++){
+            fields[i].classList.add("flip");
+        }
+    }
+    console.log(gamestate)
+    for(i=1;i<gamestate.length;i++){
+        for(j=0;j<gamestate[i].length;j++) {
+            var yx = (i-1) + "" + j;
+            if(gamestate[i][j]) {
+                var unicode = gamestate[i][j].unicode;
+                if (!gamestate[i][j].color) {
+                    unicode += 6;
+                }
+                document.getElementById(yx).innerHTML = String.fromCharCode(unicode);
+            } else {
+                document.getElementById(yx).innerHTML = "";
             }
-            document.getElementById(y).innerHTML = String.fromCharCode(unicode);
-        } else {
-            document.getElementById(y).innerHTML = "";
         }
     }
 }

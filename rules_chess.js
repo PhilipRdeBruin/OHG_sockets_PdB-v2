@@ -11,6 +11,7 @@ exports.gameMove = function(globalGameState, room, move) {
     if(gamestate == "init") {
         console.log("init")
         init();
+        gamestate[0][0]["white"] = globalGameState[room]["users"][globalGameState[room]["active"]];
     } else {
         console.log("resuming")
     }

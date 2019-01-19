@@ -81,6 +81,7 @@ exports.sv_fillGameState = function(){
 
 function fillGameState() {
     var gs = [
+        [{white: "player"}],
         [new rook(null, "rook", 0, 0, black), new knight(null, "knight", 1, 0, black), new bishop(null, "bishop", 2, 0, black), new queen(null, "queen", 3, 0, black), new king(null, "king", 4, 0, black), new bishop(null, "bishop", 5, 0, black), new knight(null, "knight", 6, 0, black), new rook(null, "rook", 7, 0, black)],
         [new pawn(null, "pawn", 0, 1, black), new pawn(null, "pawn", 1, 1, black), new pawn(null, "pawn", 2, 1, black), new pawn(null, "pawn", 3, 1, black), new pawn(null, "pawn", 4, 1, black), new pawn(null, "pawn", 5, 1, black), new pawn(null, "pawn", 6, 1, black), new pawn(null, "pawn", 7, 1, black)],
         [null, null, null, null, null, null, null, null],

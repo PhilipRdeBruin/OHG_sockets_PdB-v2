@@ -6,6 +6,7 @@
         #chess {
             width:640px;
             height:640px;
+            transition: transform 5s;
         }
         .field {
             width:80px;
@@ -25,6 +26,10 @@
             -moz-user-select: none; /* Firefox */
             -ms-user-select: none; /* Internet Explorer/Edge */
             user-select: none;
+            transition: transform 5s;
+        }
+        .flip{
+            transform:rotate(-180deg);
         }
         .light {
             background-color:#D6D2C7
