@@ -6,7 +6,7 @@
         #chess {
             width:640px;
             height:640px;
-            transition: transform 5s;
+            transition: transform 1s;
         }
         .field {
             width:80px;
@@ -26,7 +26,7 @@
             -moz-user-select: none; /* Firefox */
             -ms-user-select: none; /* Internet Explorer/Edge */
             user-select: none;
-            transition: transform 5s;
+            transition: transform 1s;
         }
         .flip{
             transform:rotate(-180deg);
@@ -49,80 +49,81 @@
     <h1 id="turns">Waiting for turn...</h1>
     <script src="http://localhost:3000/socket.io/socket.io.js"></script>
     <div id="chess">
-        <div id="00" class="field light" onclick="bkeClick(this)"></div>
-        <div id="01" class="field dark" onclick="bkeClick(this)"></div>
-        <div id="02" class="field light" onclick="bkeClick(this)"></div>
-        <div id="03" class="field dark" onclick="bkeClick(this)"></div>
-        <div id="04" class="field light" onclick="bkeClick(this)"></div>
-        <div id="05" class="field dark" onclick="bkeClick(this)"></div>
-        <div id="06" class="field light" onclick="bkeClick(this)"></div>
-        <div id="07" class="field dark" onclick="bkeClick(this)"></div>
+        <div id="00" class="field light" onclick="chessMove(this)"></div>
+        <div id="01" class="field dark" onclick="chessMove(this)"></div>
+        <div id="02" class="field light" onclick="chessMove(this)"></div>
+        <div id="03" class="field dark" onclick="chessMove(this)"></div>
+        <div id="04" class="field light" onclick="chessMove(this)"></div>
+        <div id="05" class="field dark" onclick="chessMove(this)"></div>
+        <div id="06" class="field light" onclick="chessMove(this)"></div>
+        <div id="07" class="field dark" onclick="chessMove(this)"></div>
 
-        <div id="10" class="field dark" onclick="bkeClick(this)"></div>
-        <div id="11" class="field light" onclick="bkeClick(this)"></div>
-        <div id="12" class="field dark" onclick="bkeClick(this)"></div>
-        <div id="13" class="field light" onclick="bkeClick(this)"></div>
-        <div id="14" class="field dark" onclick="bkeClick(this)"></div>
-        <div id="15" class="field light" onclick="bkeClick(this)"></div>
-        <div id="16" class="field dark" onclick="bkeClick(this)"></div>
-        <div id="17" class="field light" onclick="bkeClick(this)"></div>
+        <div id="10" class="field dark" onclick="chessMove(this)"></div>
+        <div id="11" class="field light" onclick="chessMove(this)"></div>
+        <div id="12" class="field dark" onclick="chessMove(this)"></div>
+        <div id="13" class="field light" onclick="chessMove(this)"></div>
+        <div id="14" class="field dark" onclick="chessMove(this)"></div>
+        <div id="15" class="field light" onclick="chessMove(this)"></div>
+        <div id="16" class="field dark" onclick="chessMove(this)"></div>
+        <div id="17" class="field light" onclick="chessMove(this)"></div>
 
-        <div id="20" class="field light" onclick="bkeClick(this)"></div>
-        <div id="21" class="field dark" onclick="bkeClick(this)"></div>
-        <div id="22" class="field light" onclick="bkeClick(this)"></div>
-        <div id="23" class="field dark" onclick="bkeClick(this)"></div>
-        <div id="24" class="field light" onclick="bkeClick(this)"></div>
-        <div id="25" class="field dark" onclick="bkeClick(this)"></div>
-        <div id="26" class="field light" onclick="bkeClick(this)"></div>
-        <div id="27" class="field dark" onclick="bkeClick(this)"></div>
+        <div id="20" class="field light" onclick="chessMove(this)"></div>
+        <div id="21" class="field dark" onclick="chessMove(this)"></div>
+        <div id="22" class="field light" onclick="chessMove(this)"></div>
+        <div id="23" class="field dark" onclick="chessMove(this)"></div>
+        <div id="24" class="field light" onclick="chessMove(this)"></div>
+        <div id="25" class="field dark" onclick="chessMove(this)"></div>
+        <div id="26" class="field light" onclick="chessMove(this)"></div>
+        <div id="27" class="field dark" onclick="chessMove(this)"></div>
 
-        <div id="30" class="field dark" onclick="bkeClick(this)"></div>
-        <div id="31" class="field light" onclick="bkeClick(this)"></div>
-        <div id="32" class="field dark" onclick="bkeClick(this)"></div>
-        <div id="33" class="field light" onclick="bkeClick(this)"></div>
-        <div id="34" class="field dark" onclick="bkeClick(this)"></div>
-        <div id="35" class="field light" onclick="bkeClick(this)"></div>
-        <div id="36" class="field dark" onclick="bkeClick(this)"></div>
-        <div id="37" class="field light" onclick="bkeClick(this)"></div>
+        <div id="30" class="field dark" onclick="chessMove(this)"></div>
+        <div id="31" class="field light" onclick="chessMove(this)"></div>
+        <div id="32" class="field dark" onclick="chessMove(this)"></div>
+        <div id="33" class="field light" onclick="chessMove(this)"></div>
+        <div id="34" class="field dark" onclick="chessMove(this)"></div>
+        <div id="35" class="field light" onclick="chessMove(this)"></div>
+        <div id="36" class="field dark" onclick="chessMove(this)"></div>
+        <div id="37" class="field light" onclick="chessMove(this)"></div>
 
-        <div id="40" class="field light" onclick="bkeClick(this)"></div>
-        <div id="41" class="field dark" onclick="bkeClick(this)"></div>
-        <div id="42" class="field light" onclick="bkeClick(this)"></div>
-        <div id="43" class="field dark" onclick="bkeClick(this)"></div>
-        <div id="44" class="field light" onclick="bkeClick(this)"></div>
-        <div id="45" class="field dark" onclick="bkeClick(this)"></div>
-        <div id="46" class="field light" onclick="bkeClick(this)"></div>
-        <div id="47" class="field dark" onclick="bkeClick(this)"></div>
+        <div id="40" class="field light" onclick="chessMove(this)"></div>
+        <div id="41" class="field dark" onclick="chessMove(this)"></div>
+        <div id="42" class="field light" onclick="chessMove(this)"></div>
+        <div id="43" class="field dark" onclick="chessMove(this)"></div>
+        <div id="44" class="field light" onclick="chessMove(this)"></div>
+        <div id="45" class="field dark" onclick="chessMove(this)"></div>
+        <div id="46" class="field light" onclick="chessMove(this)"></div>
+        <div id="47" class="field dark" onclick="chessMove(this)"></div>
 
-        <div id="50" class="field dark" onclick="bkeClick(this)"></div>
-        <div id="51" class="field light" onclick="bkeClick(this)"></div>
-        <div id="52" class="field dark" onclick="bkeClick(this)"></div>
-        <div id="53" class="field light" onclick="bkeClick(this)"></div>
-        <div id="54" class="field dark" onclick="bkeClick(this)"></div>
-        <div id="55" class="field light" onclick="bkeClick(this)"></div>
-        <div id="56" class="field dark" onclick="bkeClick(this)"></div>
-        <div id="57" class="field light" onclick="bkeClick(this)"></div>
+        <div id="50" class="field dark" onclick="chessMove(this)"></div>
+        <div id="51" class="field light" onclick="chessMove(this)"></div>
+        <div id="52" class="field dark" onclick="chessMove(this)"></div>
+        <div id="53" class="field light" onclick="chessMove(this)"></div>
+        <div id="54" class="field dark" onclick="chessMove(this)"></div>
+        <div id="55" class="field light" onclick="chessMove(this)"></div>
+        <div id="56" class="field dark" onclick="chessMove(this)"></div>
+        <div id="57" class="field light" onclick="chessMove(this)"></div>
 
-        <div id="60" class="field light" onclick="bkeClick(this)"></div>
-        <div id="61" class="field dark" onclick="bkeClick(this)"></div>
-        <div id="62" class="field light" onclick="bkeClick(this)"></div>
-        <div id="63" class="field dark" onclick="bkeClick(this)"></div>
-        <div id="64" class="field light" onclick="bkeClick(this)"></div>
-        <div id="65" class="field dark" onclick="bkeClick(this)"></div>
-        <div id="66" class="field light" onclick="bkeClick(this)"></div>
-        <div id="67" class="field dark" onclick="bkeClick(this)"></div>
+        <div id="60" class="field light" onclick="chessMove(this)"></div>
+        <div id="61" class="field dark" onclick="chessMove(this)"></div>
+        <div id="62" class="field light" onclick="chessMove(this)"></div>
+        <div id="63" class="field dark" onclick="chessMove(this)"></div>
+        <div id="64" class="field light" onclick="chessMove(this)"></div>
+        <div id="65" class="field dark" onclick="chessMove(this)"></div>
+        <div id="66" class="field light" onclick="chessMove(this)"></div>
+        <div id="67" class="field dark" onclick="chessMove(this)"></div>
 
-        <div id="70" class="field dark" onclick="bkeClick(this)"></div>
-        <div id="71" class="field light" onclick="bkeClick(this)"></div>
-        <div id="72" class="field dark" onclick="bkeClick(this)"></div>
-        <div id="73" class="field light" onclick="bkeClick(this)"></div>
-        <div id="74" class="field dark" onclick="bkeClick(this)"></div>
-        <div id="75" class="field light" onclick="bkeClick(this)"></div>
-        <div id="76" class="field dark" onclick="bkeClick(this)"></div>
-        <div id="77" class="field light" onclick="bkeClick(this)"></div>
+        <div id="70" class="field dark" onclick="chessMove(this)"></div>
+        <div id="71" class="field light" onclick="chessMove(this)"></div>
+        <div id="72" class="field dark" onclick="chessMove(this)"></div>
+        <div id="73" class="field light" onclick="chessMove(this)"></div>
+        <div id="74" class="field dark" onclick="chessMove(this)"></div>
+        <div id="75" class="field light" onclick="chessMove(this)"></div>
+        <div id="76" class="field dark" onclick="chessMove(this)"></div>
+        <div id="77" class="field light" onclick="chessMove(this)"></div>
     </div>
     <button onclick="makeMove('testing moves')">Send test move</button>
-    <script src="http://localhost/OHGSockets/common_chess.js"></script>
     <script src="http://localhost/OHGSockets/frontend_chess.js"></script>
+    <script src="http://localhost/OHGSockets/common_chess.js"></script>
+    
 </body>
 </html>

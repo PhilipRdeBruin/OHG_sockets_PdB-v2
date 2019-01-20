@@ -7,6 +7,8 @@ var game = lhValues[0];
 var socket = io('http://localhost:3000');
 var gameData = {room: room, game: game, user: user};
 var localGameState = [];
+var activeTile = false;
+var firstPlayer = false;
 
 // SOCKETS
 socket.emit('join room', gameData);
@@ -15,13 +17,15 @@ socket.on('game state', function(gamestate){
         if (gamestate === "init") {
             init();
         } else {
-            renderGame(gamestate);
+            localGameState = gamestate;
+            renderGame(localGameState);
         }
     }
     catch(err){console.log(err)}
 });
 socket.on('game turn', function(turn){
     if(turn == 1){
+        firstPlayer = true;
         document.getElementById("turns").innerHTML = "Make a move!"
     } else if (turn == 0) {
         document.getElementById("turns").innerHTML = "Waiting for turn.."
@@ -61,6 +65,34 @@ function renderGame(gamestate){
             } else {
                 document.getElementById(yx).innerHTML = "";
             }
+        }
+    }
+}
+var possibleMoves = [];
+function chessMove(el) {
+    var y = parseInt(el.id[0]);
+    var x = parseInt(el.id[1]);
+    var piece = new chessPiece(localGameState[y+1][x]).getType();
+    var myColor;
+    if(localGameState[0][0].white == user || (localGameState[0][0].white == "player" && firstPlayer)) {
+        myColor = white;
+    } else {
+        myColor = black;
+    } 
+    if(piece && !activeTile && myColor == piece.color){
+        activeTile = el;
+        el.classList.add("highlight")
+        possibleMoves = piece.move();
+        for (i=0;i<possibleMoves.length;i++) {
+            var temp = possibleMoves[i].y + "" + possibleMoves[i].x;
+            document.getElementById(temp).classList.add("possible");
+        }
+    } else if (el == activeTile) {
+        activeTile.classList.remove("highlight")
+        activeTile = false;
+        for (i=0;i<possibleMoves.length;i++) {
+            var temp = possibleMoves[i].y + "" + possibleMoves[i].x;
+            document.getElementById(temp).classList.remove("possible");
         }
     }
 }
