@@ -16,6 +16,7 @@ var gamesAvailable = {
     bke: [2, '[[0,0,0],[0,0,0],[0,0,0]]', 0],
     mastermind: [2, '[]', 0],
     chess: [2, '\"init\"', 0],
+    voer: [2, "[[],[],[],[],[],[],[]]", 0],
     template: [2, "[[],[],[]]", 0]
 };
 var globalGameState = [];
