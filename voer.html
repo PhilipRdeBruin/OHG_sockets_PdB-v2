@@ -7,6 +7,10 @@
             #voer {
                 width:700px;
                 height:600px;
+                background-color:blue;
+                border-style:outset;
+                border-color:lightblue;
+                border-width: 5px;
             }
             .col {
                 width:100px;
@@ -28,13 +32,18 @@
                 margin-top:15px;
                 background-color:white;
                 border-radius:40px;
+                box-shadow: inset 0px 0px 10px rgba(0,0,0,0.2);
+                border-style: inset;
+                box-sizing:border-box;
                 
             }
             .red {
-                background-color:red;
+                background:radial-gradient(ellipse at center, rgba(245,255,107,1) 1%,rgba(255,255,7,1) 100%);
+                box-shadow: inset 0px 0px 10px rgba(0,0,0,0.4);
             }
             .yellow {
-                background-color:yellow;
+                background:radial-gradient(ellipse at center, rgba(242,190,48,1) 0%,rgba(238,255,7,1) 100%);
+                box-shadow: inset 0px 0px 10px rgba(0,0,0,0.4);
             }
             h1{
                 position:absolute;
@@ -109,7 +118,7 @@
 
 
    
-    <script src="http://192.168.2.176:3000/socket.io/socket.io.js"></script>
+    <script src="http://localhost:3000/socket.io/socket.io.js"></script>
     <button onclick="makeMove('testing moves')">Send test move</button>
     <script>
         var lh = location.hash.split('#')[1];
@@ -117,7 +126,7 @@
         var room = lhValues[1];
         var user = lhValues[2];
         var game = lhValues[0];
-        var socket = io('http://192.168.2.176:3000');
+        var socket = io('http://localhost:3000');
         var gameData = {room: room, game: game, user: user};
         socket.emit('join room', gameData);
         
