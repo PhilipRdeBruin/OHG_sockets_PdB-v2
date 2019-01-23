@@ -1,6 +1,6 @@
 {
-  "name": "OHG Backend Server",
-  "version": "0.2.0",
+  "name": "ohg-backend-server",
+  "version": "0.3.0",
   "description": "Backend to play realtime boardgames over the internet",
   "dependencies": {
     "mysql": "^2.16.0",

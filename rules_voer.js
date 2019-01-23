@@ -22,6 +22,11 @@ exports.gameMove = function(globalGameState, room, move) {
     globalGameState[room]["gamestate"] = gamestate;
 }
 
+exports.gameInit = function(globalGameState, room) {
+    var init = "";
+    return init;
+}
+
 exports.gameEnd = function(socket, room, globalGameState, server) {
     globalGameState[room]["winner"] = socket.username;
     if(globalGameState[room]["active"] === -1) {

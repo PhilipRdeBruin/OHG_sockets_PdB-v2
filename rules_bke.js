@@ -4,13 +4,8 @@
 
 exports.gameMove = function(globalGameState, room, move) {
     console.log(move);
-    var player;
+    var player = globalGameState[room]["init"][globalGameState[room]["users"][globalGameState[room]["active"]]];
     var gamestate = JSON.parse(globalGameState[room]["gamestate"]);
-    if (globalGameState[room]["active"] == 0) {
-        player = "O"
-    } else {
-        player = "X"
-    }
     if (ruleSet(move, gamestate)) {
         gamestate[move[0]][move[1]] = player;
 
@@ -20,6 +15,21 @@ exports.gameMove = function(globalGameState, room, move) {
     globalGameState[room]["result"] = winCon(gamestate, globalGameState[room]["active"]);
     gamestate = JSON.stringify(gamestate);
     globalGameState[room]["gamestate"] = gamestate;
+}
+
+exports.gameInit = function(globalGameState, room) {
+    var users = {}
+    users[globalGameState[room]["users"][globalGameState[room]["active"]]] = "X"
+    if (globalGameState[room]["active"] == 0) {
+        var active = [globalGameState[room]["active"]];
+        active++;
+        users[globalGameState[room]["users"][active]] = "O";
+    } else {
+        var active = [globalGameState[room]["active"]];
+        active--;
+        users[globalGameState[room]["users"][active]] = "O";
+    }
+    return users;
 }
 
 exports.gameEnd = function(socket, room, globalGameState, server) {

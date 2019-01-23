@@ -69,6 +69,13 @@ server.on('connection', function(socket) {
                 if (globalGameState[room]['users'].length == playerAmount) {
                     globalGameState[room]["active"] = randomUser(playerAmount);
                     console.log("game full, room '" + room + "' started with players: " + globalGameState[room]['users'] + ", starting player: " + globalGameState[room]["active"]);
+                    
+                    // SETTING UP PLAYER ROLES/INIT
+                    var ruleSet = require('./rules_' + globalGameState[room]['game'] + '.js');
+                    globalGameState[room]["init"] = ruleSet.gameInit(globalGameState, room);
+                    delete require.cache[require.resolve('./rules_' + globalGameState[room]['game'] + '.js')];
+                    server.to(room).emit('game init', globalGameState[room]["init"]);
+
                     var sendTo = connectedUsers[globalGameState[room]["users"][globalGameState[room]["active"]]];
                     server.to(`${sendTo}`).emit('game turn', 1);
                 }
