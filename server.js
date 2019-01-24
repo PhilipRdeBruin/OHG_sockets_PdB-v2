@@ -14,6 +14,7 @@ var db = mysql.createConnection({
 // Games Available Template = Game Name: [Player Count, Initial Game State, Extra player input per turn]
 var gamesAvailable = {
     bke: [2, '[[0,0,0],[0,0,0],[0,0,0]]', 0],
+    bke2: [2, '[[0,0,0],[0,0,0],[0,0,0]]', 0],
     mastermind: [2, '[]', 0],
     chess: [2, '\"init\"', 0],
     voer: [2, "[[],[],[],[],[],[],[]]", 0],
@@ -37,7 +38,6 @@ server.on('connection', function(socket) {
             var playerAmount = gamesAvailable[gData.game][0];
             socket.join(room);
             socket["username"] = gData.user;
-            console.log(socket.username + " joined room '"+ room + "'")
 
             // SET UP INITIAL GAMESTATE
             if (globalGameState[room] == null) {
@@ -45,7 +45,6 @@ server.on('connection', function(socket) {
                 globalGameState[room]['users'] = [];
                 globalGameState[room]['count'] = 0;
                 globalGameState[room]['gamestate'] = gamesAvailable[gData.game][1];
-                console.log(globalGameState[room]['gamestate']);
                 globalGameState[room]['game'] = gData.game;
                 globalGameState[room]['result'] = [];
             } else if (globalGameState[room]["active"] != null) {
@@ -68,14 +67,14 @@ server.on('connection', function(socket) {
                 }
                 if (globalGameState[room]['users'].length == playerAmount) {
                     globalGameState[room]["active"] = randomUser(playerAmount);
-                    console.log("game full, room '" + room + "' started with players: " + globalGameState[room]['users'] + ", starting player: " + globalGameState[room]["active"]);
                     
                     // SETTING UP PLAYER ROLES/INIT
                     var ruleSet = require('./rules_' + globalGameState[room]['game'] + '.js');
                     globalGameState[room]["init"] = ruleSet.gameInit(globalGameState, room);
                     delete require.cache[require.resolve('./rules_' + globalGameState[room]['game'] + '.js')];
+                    
                     server.to(room).emit('game init', globalGameState[room]["init"]);
-
+                    console.log("game full, room '" + room + "' started with players: " + globalGameState[room]['users'] + ", starting player: " + globalGameState[room]["active"]);
                     var sendTo = connectedUsers[globalGameState[room]["users"][globalGameState[room]["active"]]];
                     server.to(`${sendTo}`).emit('game turn', 1);
                 }
@@ -103,12 +102,9 @@ server.on('connection', function(socket) {
                     dbData = data;
                 })
                 .on('end', function(){
-                    console.log("dbData: " + dbData)
                     if(dbData){
-                        console.log("room found in database, updating");
                         db.query(`UPDATE ${socket.game} SET gamestate = '${globalGameState[room]['gamestate']}' WHERE room = "${room}"`)
                     } else {
-                        console.log("room NOT found in database, creating");
                         db.query(`INSERT INTO ${socket.game} (room, gamestate, winner) VALUES ("${room}", '${globalGameState[room]['gamestate']}', 0)`); 
                     }
                 })

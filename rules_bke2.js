@@ -18,15 +18,17 @@ exports.gameMove = function(globalGameState, room, move) {
 
 exports.gameInit = function(globalGameState, room) {
     var users = {}
-    users[globalGameState[room]["users"][globalGameState[room]["active"]]] = "X"
-    if (globalGameState[room]["active"] == 0) {
-        var active = [globalGameState[room]["active"]];
-        active++;
-        users[globalGameState[room]["users"][active]] = "O";
+    var user0 = globalGameState[room]["users"][0];
+    var user1 = globalGameState[room]["users"][1];
+    userC = user0.split("%");
+    if(userC[1] == "codecracker") {
+        users[user0] = "X"
+        users[user1] = "O"
+        globalGameState[room]["active"] = 0;
     } else {
-        var active = [globalGameState[room]["active"]];
-        active--;
-        users[globalGameState[room]["users"][active]] = "O";
+        users[user0] = "O"
+        users[user1] = "X"
+        globalGameState[room]["active"] = 1;
     }
     return users;
 }
