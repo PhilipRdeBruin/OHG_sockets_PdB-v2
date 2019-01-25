@@ -125,20 +125,20 @@
         var room = lhValues[1];
         var user = lhValues[2];
         var game = lhValues[0];
-        var socket = io('http://localhost:3000/game');
+        var gamesocket = io('http://localhost:3000/game');
         var gameData = {room: room, game: game, user: user};
-        socket.emit('join room', gameData);
+        gamesocket.emit('join room', gameData);
         
-        socket.on('game state', function(gamestate){
+        gamesocket.on('game state', function(gamestate){
             renderGame(gamestate);
         });
-        socket.on('game result', function(gamestate){
+        gamesocket.on('game result', function(gamestate){
             console.log("result")
         });
-        socket.on('game loss', function(gamestate){
+        gamesocket.on('game loss', function(gamestate){
             document.getElementById("win").innerHTML = "loss";
         });
-        socket.on('game win', function(gamestate){
+        gamesocket.on('game win', function(gamestate){
             document.getElementById("win").innerHTML = "win!";
         });
 
@@ -149,7 +149,7 @@
                 }
             }
         }
-        socket.on('game turn', function(turn){
+        gamesocket.on('game turn', function(turn){
             if(turn == 1){
                 document.getElementById("turns").innerHTML = "Make a move!"
             } else if (turn == 0) {
@@ -160,7 +160,7 @@
         });
         function move(x) {
             var moveData = x.id[1];
-            socket.emit('game move', moveData)
+            gamesocket.emit('game move', moveData)
         };
     </script>
 </body>

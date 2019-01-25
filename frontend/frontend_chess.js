@@ -4,15 +4,15 @@ var lhValues = lh.split('&');
 var room = lhValues[1];
 var user = lhValues[2];
 var game = lhValues[0];
-var socket = io('http://localhost:3000/game');
+var gamesocket = io('http://localhost:3000/game');
 var gameData = {room: room, game: game, user: user};
 var localGameState = [];
 var activeTile = false;
 var firstPlayer = false;
 
 // SOCKETS
-socket.emit('join room', gameData);
-socket.on('game state', function(gamestate){
+gamesocket.emit('join room', gameData);
+gamesocket.on('game state', function(gamestate){
     try {
         if (gamestate === "init") {
             init();
@@ -23,7 +23,7 @@ socket.on('game state', function(gamestate){
     }
     catch(err){console.log(err)}
 });
-socket.on('game turn', function(turn){
+gamesocket.on('game turn', function(turn){
     if(turn == 1){
         firstPlayer = true;
         document.getElementById("turns").innerHTML = "Make a move!"
@@ -36,7 +36,7 @@ socket.on('game turn', function(turn){
 
 // FUNCTIONS
 function makeMove(moveData) {
-    socket.emit('game move', moveData)
+    gamesocket.emit('game move', moveData)
 };
 
 function init(){

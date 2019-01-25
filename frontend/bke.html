@@ -43,19 +43,19 @@
         var room = lhValues[1];
         var user = lhValues[2];
         var game = lhValues[0];
-        var socket = io('http://localhost:3000/game');
+        var gamesocket = io('http://localhost:3000/game');
         var gameData = {room: room, game: game, user: user};
-        socket.emit('join room', gameData);
-        socket.on('game win', function(msg){
+        gamesocket.emit('join room', gameData);
+        gamesocket.on('game win', function(msg){
             document.getElementById(msg).style.backgroundColor = "green";
         });
-        socket.on('game loss', function(msg){
+        gamesocket.on('game loss', function(msg){
             document.getElementById(msg).style.backgroundColor = "red";
         });
-        socket.on('game result', function(msg){
+        gamesocket.on('game result', function(msg){
             document.getElementById(msg).style.backgroundColor = "grey";
         });
-        socket.on('game state', function(gamestate){
+        gamesocket.on('game state', function(gamestate){
             var nodes = document.getElementById("bke").childNodes;
             for(i=1;i<(nodes.length);i=i+2) {
                 var y = nodes[i].id;
@@ -66,7 +66,7 @@
                 }
             }
         });
-        socket.on('game turn', function(turn){
+        gamesocket.on('game turn', function(turn){
             if(turn == 1){
                 document.getElementById("turns").innerHTML = "Make a move!"
             } else if (turn == 0) {
@@ -75,12 +75,12 @@
                 document.getElementById("turns").innerHTML = "Game ended"
             }
         });
-        socket.on('game init', function(init){
+        gamesocket.on('game init', function(init){
             console.log(init[user]);
         });
         function bkeClick(x) {
             var id = x.id;
-            socket.emit('game move', id)
+            gamesocket.emit('game move', id)
         };
     </script>
 </body>

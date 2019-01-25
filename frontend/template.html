@@ -13,14 +13,14 @@
         var room = lhValues[1];
         var user = lhValues[2];
         var game = lhValues[0];
-        var socket = io('http://localhost:3000/game');
+        var gamesocket = io('http://localhost:3000/game');
         var gameData = {room: room, game: game, user: user};
-        socket.emit('join room', gameData);
+        gamesocket.emit('join room', gameData);
         
-        socket.on('game state', function(gamestate){
+        gamesocket.on('game state', function(gamestate){
                     gamestate
         });
-        socket.on('game turn', function(turn){
+        gamesocket.on('game turn', function(turn){
             if(turn == 1){
                 document.getElementById("turns").innerHTML = "Make a move!"
             } else if (turn == 0) {
@@ -30,7 +30,7 @@
             }
         });
         function makeMove(moveData) {
-            socket.emit('game move', moveData)
+            gamesocket.emit('game move', moveData)
         };
     </script>
 </body>
