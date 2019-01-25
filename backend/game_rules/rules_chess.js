@@ -1,7 +1,7 @@
 //
 // TEMPLATE RULESET
 //
-var chessJS = require('./common_chess.js');
+var chessJS = require('../common/common_chess.js');
 //chessJS.functionName();
 var gamestate;
 exports.gameMove = function(globalGameState, room, move) {
@@ -55,4 +55,4 @@ function winCon(gamestate, user) {
     // Function should handle all game ending events, wins or stalemates. Return array with first value being "gameEnd"
 }
 
-delete require.cache[require.resolve('./common_chess.js')];
+delete require.cache[require.resolve('../common/common_chess.js')];

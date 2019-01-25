@@ -55,9 +55,9 @@ server.on('connection', function(socket) {
                 server.to(room).emit('game state', JSON.parse(globalGameState[room]['gamestate']));
                 if (globalGameState[room]["result"][0] == "gameEnd") {
                     server.to(room).emit('game turn', 2);
-                    var ruleSet = require('./rules_' + globalGameState[room]['game'] + '.js');
+                    var ruleSet = require('./game_rules/rules_' + globalGameState[room]['game'] + '.js');
                     ruleSet.gameEnd(socket, room, globalGameState, server);
-                    delete require.cache[require.resolve('./rules_' + globalGameState[room]['game'] + '.js')];
+                    delete require.cache[require.resolve('./games_rules/rules_' + globalGameState[room]['game'] + '.js')];
                 }
             }
             // SET UP INITIAL USERS
@@ -69,9 +69,9 @@ server.on('connection', function(socket) {
                     globalGameState[room]["active"] = randomUser(playerAmount);
                     
                     // SETTING UP PLAYER ROLES/INIT
-                    var ruleSet = require('./rules_' + globalGameState[room]['game'] + '.js');
+                    var ruleSet = require('./game_rules/rules_' + globalGameState[room]['game'] + '.js');
                     globalGameState[room]["init"] = ruleSet.gameInit(globalGameState, room);
-                    delete require.cache[require.resolve('./rules_' + globalGameState[room]['game'] + '.js')];
+                    delete require.cache[require.resolve('./game_rules/rules_' + globalGameState[room]['game'] + '.js')];
                     
                     server.to(room).emit('game init', globalGameState[room]["init"]);
                     console.log("game full, room '" + room + "' started with players: " + globalGameState[room]['users'] + ", starting player: " + globalGameState[room]["active"]);
@@ -89,7 +89,7 @@ server.on('connection', function(socket) {
             if (globalGameState[room]["users"][globalGameState[room]["active"]] == socket.username) {
 
                 // GAME SPECIFIC MOVE
-                var ruleSet = require('./rules_' + globalGameState[room]['game'] + '.js');
+                var ruleSet = require('./game_rules/rules_' + globalGameState[room]['game'] + '.js');
                 ruleSet.gameMove(globalGameState, room, move);
 
                 // RETURN GAMESTATE TO ALL USERS IN ROOM
@@ -131,7 +131,7 @@ server.on('connection', function(socket) {
                     globalGameState[room]['active'] = -1;
                     console.log("game in room '" + room + "' ended");
                 }
-                delete require.cache[require.resolve('./rules_' + globalGameState[room]['game'] + '.js')];
+                delete require.cache[require.resolve('./game_rules/rules_' + globalGameState[room]['game'] + '.js')];
             }
         }
     });
