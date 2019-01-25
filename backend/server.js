@@ -3,6 +3,7 @@ var mysql = require('mysql');
 var io = require('socket.io');
 var server = io.listen(3000);
 var gameserver = server.of('/game');
+var queueserver = server.of('/queue');
 
 // DATABASE VARIABLES
 var db = mysql.createConnection({
@@ -22,6 +23,7 @@ var gamesAvailable = {
     template: [2, "[[],[],[]]", 0]
 };
 var globalGameState = [];
+var globalQueueData = [];
 var connectedUsers = [];
 function randomUser(amount) {
     return Math.floor(Math.random() * amount)
@@ -139,5 +141,48 @@ gameserver.on('connection', function(socket) {
     // DISCONNECT
     socket.on('disconnect', function() {
         delete connectedUsers[socket.username]
+    });
+});
+
+/**
+ * 
+ * END OF GAMESERVER
+ * 
+ * START OF QUEUE SYSTEM
+ * 
+ */
+
+queueserver.on('connection', function(socket) {
+    socket.on('join room', function(data) {
+        var room = data.game;
+        socket["room"] = room;
+        socket["user"] = data.user;
+        if (globalQueueData[room] == null) {
+            globalQueueData[room] = [];
+        }
+        socket.join(room);
+        globalQueueData[room][data.user] = [data.user, socket.id];
+        queueserver.to(room).emit('queue', Object.keys(globalQueueData[room]));
+    });
+
+    socket.on('invite', function(invite) {
+        if(globalQueueData[socket.room][invite] != null) {
+            var sendTo = globalQueueData[socket.room][invite][1];
+            queueserver.to(`${sendTo}`).emit('invited', socket.user);
+        }
+    });
+
+    socket.on('response', function(res) {
+        if(res[0]){
+            var sendTo = globalQueueData[socket.room][res[1]][1];
+            queueserver.to(`${sendTo}`).emit('confirm', socket.user);
+        }
+    });
+
+    socket.on('disconnect', function() {
+        if(socket.room != null){
+            delete globalQueueData[socket.room][socket.user];
+            queueserver.to(socket.room).emit('queue', Object.keys(globalQueueData[socket.room]));
+        }
     });
 });
