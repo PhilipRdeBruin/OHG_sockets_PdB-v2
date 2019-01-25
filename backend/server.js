@@ -2,6 +2,7 @@
 var mysql = require('mysql');
 var io = require('socket.io');
 var server = io.listen(3000);
+var gameserver = server.of('/game');
 
 // DATABASE VARIABLES
 var db = mysql.createConnection({
@@ -27,7 +28,7 @@ function randomUser(amount) {
 }
 
 // USER CONNECT
-server.on('connection', function(socket) {
+gameserver.on('connection', function(socket) {
     // JOIN ROOM
     socket.on('join room', function(gData) {
         if(Object.keys(gamesAvailable).indexOf(gData.game) !== -1){
@@ -49,12 +50,12 @@ server.on('connection', function(socket) {
                 globalGameState[room]['result'] = [];
             } else if (globalGameState[room]["active"] != null) {
                 var sendTo = connectedUsers[globalGameState[room]["users"][globalGameState[room]["active"]]];
-                server.to(`${sendTo}`).emit('game turn', 1);
+                gameserver.to(`${sendTo}`).emit('game turn', 1);
             }
             if (globalGameState[room] != null) {
-                server.to(room).emit('game state', JSON.parse(globalGameState[room]['gamestate']));
+                gameserver.to(room).emit('game state', JSON.parse(globalGameState[room]['gamestate']));
                 if (globalGameState[room]["result"][0] == "gameEnd") {
-                    server.to(room).emit('game turn', 2);
+                    gameserver.to(room).emit('game turn', 2);
                     var ruleSet = require('./game_rules/rules_' + globalGameState[room]['game'] + '.js');
                     ruleSet.gameEnd(socket, room, globalGameState, server);
                     delete require.cache[require.resolve('./games_rules/rules_' + globalGameState[room]['game'] + '.js')];
@@ -73,10 +74,10 @@ server.on('connection', function(socket) {
                     globalGameState[room]["init"] = ruleSet.gameInit(globalGameState, room);
                     delete require.cache[require.resolve('./game_rules/rules_' + globalGameState[room]['game'] + '.js')];
                     
-                    server.to(room).emit('game init', globalGameState[room]["init"]);
+                    gameserver.to(room).emit('game init', globalGameState[room]["init"]);
                     console.log("game full, room '" + room + "' started with players: " + globalGameState[room]['users'] + ", starting player: " + globalGameState[room]["active"]);
                     var sendTo = connectedUsers[globalGameState[room]["users"][globalGameState[room]["active"]]];
-                    server.to(`${sendTo}`).emit('game turn', 1);
+                    gameserver.to(`${sendTo}`).emit('game turn', 1);
                 }
             }
         }
@@ -93,7 +94,7 @@ server.on('connection', function(socket) {
                 ruleSet.gameMove(globalGameState, room, move);
 
                 // RETURN GAMESTATE TO ALL USERS IN ROOM
-                server.to(room).emit('game state', JSON.parse(globalGameState[room]['gamestate']));
+                gameserver.to(room).emit('game state', JSON.parse(globalGameState[room]['gamestate']));
 
                 // BACKUP GAME STATE TO DATABASE
                 var dbData = false;
@@ -121,11 +122,11 @@ server.on('connection', function(socket) {
                         globalGameState[room]["active"] = 0;
                     }
                     var sendTo = connectedUsers[globalGameState[room]["users"][globalGameState[room]["active"]]];
-                    server.to(`${sendTo}`).emit('game turn', 1);
+                    gameserver.to(`${sendTo}`).emit('game turn', 1);
                 }
                 // DETECT GAME ENDING
                 if (globalGameState[room]["result"][0] == "gameEnd") {
-                    server.to(room).emit('game turn', 2);
+                    gameserver.to(room).emit('game turn', 2);
                     ruleSet.gameEnd(socket, room, globalGameState, server);
                     db.query(`UPDATE ${socket.game} SET winner = '${globalGameState[room]["winner"]}' WHERE room = "${room}"`);
                     globalGameState[room]['active'] = -1;

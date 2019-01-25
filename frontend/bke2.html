@@ -45,7 +45,7 @@
         var role = lhValues[3];
         user += "%" + role;
         var game = lhValues[0];
-        var socket = io('http://localhost:3000');
+        var socket = io('http://localhost:3000/game');
         var gameData = {room: room, game: game, user: user};
         socket.emit('join room', gameData);
         socket.on('game win', function(msg){
