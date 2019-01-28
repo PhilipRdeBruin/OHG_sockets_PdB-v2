@@ -1,58 +1,8 @@
 <!doctype html>
 <html>
   <head>
-    <title>Vier op een R</title>
-    <head>  
-        <style>
-            #voer {
-                width:700px;
-                height:600px;
-                background-color:blue;
-                border-style:outset;
-                border-color:lightblue;
-                border-width: 5px;
-            }
-            .col {
-                width:100px;
-                height:600px;
-                float:left;
-                background-color:blue;
-                padding-top:10px;
-                box-sizing:border-box;
-                cursor:pointer;
-            
-            }
-            .col:hover{
-                background-color:darkblue;
-            }
-            .field {
-                width:80px;
-                height:80px;
-                margin:10px;
-                margin-top:15px;
-                background-color:white;
-                border-radius:40px;
-                box-shadow: inset 0px 0px 10px rgba(0,0,0,0.2);
-                border-style: inset;
-                box-sizing:border-box;
-                
-            }
-            .red {
-                background-color:red;
-                box-shadow: inset 0px 0px 10px rgba(0,0,0,0.4);
-            }
-            .yellow {
-                background-color:yellow;
-                box-shadow: inset 0px 0px 10px rgba(0,0,0,0.4);
-            }
-            h1{
-                position:absolute;
-                font-family: Arial;
-                font-size:200px;
-                top:50px;
-                left:150px;
-            }
-        </style>
+    <title>Vier op een R</title>  
+    <link rel="stylesheet" type="text/css" href="css/voer.css">
     </head>
     <body>
         <h2 id="turns">Waiting for turn...</h1>
@@ -119,49 +69,6 @@
 
    
     <script src="http://localhost:3000/socket.io/socket.io.js"></script>
-    <script>
-        var lh = location.hash.split('#')[1];
-        var lhValues = lh.split('&');
-        var room = lhValues[1];
-        var user = lhValues[2];
-        var game = lhValues[0];
-        var gamesocket = io('http://localhost:3000/game');
-        var gameData = {room: room, game: game, user: user};
-        gamesocket.emit('join room', gameData);
-        
-        gamesocket.on('game state', function(gamestate){
-            renderGame(gamestate);
-        });
-        gamesocket.on('game result', function(gamestate){
-            console.log("result")
-        });
-        gamesocket.on('game loss', function(gamestate){
-            document.getElementById("win").innerHTML = "loss";
-        });
-        gamesocket.on('game win', function(gamestate){
-            document.getElementById("win").innerHTML = "win!";
-        });
-
-        function renderGame(gamestate){
-            for(i=0;i<7;i++){
-                for(j=0;j<gamestate[i].length;j++){
-                    document.getElementById(i + "" + j).classList.add(gamestate[i][j])
-                }
-            }
-        }
-        gamesocket.on('game turn', function(turn){
-            if(turn == 1){
-                document.getElementById("turns").innerHTML = "Make a move!"
-            } else if (turn == 0) {
-                document.getElementById("turns").innerHTML = "Waiting for turn.."
-            } else if (turn == 2) {
-                document.getElementById("turns").innerHTML = "Game ended"
-            }
-        });
-        function move(x) {
-            var moveData = x.id[1];
-            gamesocket.emit('game move', moveData)
-        };
-    </script>
+    <script src="js/voer.js"></script>
 </body>
 </html>

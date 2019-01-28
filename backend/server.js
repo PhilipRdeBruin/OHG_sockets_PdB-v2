@@ -4,6 +4,7 @@ var io = require('socket.io');
 var server = io.listen(3000);
 var gameserver = server.of('/game');
 var queueserver = server.of('/queue');
+var chatserver = server.of('/chat');
 
 // DATABASE VARIABLES
 var db = mysql.createConnection({
@@ -184,5 +185,24 @@ queueserver.on('connection', function(socket) {
             delete globalQueueData[socket.room][socket.user];
             queueserver.to(socket.room).emit('queue', Object.keys(globalQueueData[socket.room]));
         }
+    });
+});
+
+
+/**
+ * 
+ * END OF QUEUE SYSTEM
+ * 
+ * START OF CHAT SERVER
+ * 
+ */
+
+chatserver.on('connection', function(socket) {
+    socket.on('join room', function(data) {
+        socket.join(room);
+    });
+
+
+    socket.on('disconnect', function() {
     });
 });

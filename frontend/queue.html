@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+  <head>
+    <title>TEMPLATE</title>
+    <link rel="stylesheet" type="text/css" href="css/queue.css">
+</head>
+<body>
+    <!--HIDDEN FORM-->
+    <form id="hiddenform" method="POST" action="">
+        <input id="input_act_spel" type="text" name="act_spel"></input>
+        <input id="input_speler" type="text" name="speler"></input>
+    </form>
+
+    <h1 id="players"></h1>
+    <ul id="queue">
+    </ul>
+
+    <div id="modalbg">
+        <div id="modal">
+            <h3 id="modalhead"></h3>
+            <p id="modaltext"></p>
+            <div id="invitebuttons">
+                <button onclick="declineInv()">Decline invite</button>
+                <button onclick="acceptInv()">Accept invite</button>
+            </div>
+            <div id="confirmbuttons">
+                <button onclick="goToGame()">Go to game</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="http://localhost:3000/socket.io/socket.io.js"></script>
+    <script src="js/queue.js"></script>
+</body>
+</html>

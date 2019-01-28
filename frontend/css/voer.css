@@ -1,0 +1,48 @@
+#voer {
+    width:700px;
+    height:600px;
+    background-color:blue;
+    border-style:outset;
+    border-color:lightblue;
+    border-width: 5px;
+}
+.col {
+    width:100px;
+    height:600px;
+    float:left;
+    background-color:blue;
+    padding-top:10px;
+    box-sizing:border-box;
+    cursor:pointer;
+
+}
+.col:hover{
+    background-color:darkblue;
+}
+.field {
+    width:80px;
+    height:80px;
+    margin:10px;
+    margin-top:15px;
+    background-color:white;
+    border-radius:40px;
+    box-shadow: inset 0px 0px 10px rgba(0,0,0,0.2);
+    border-style: inset;
+    box-sizing:border-box;
+    
+}
+.red {
+    background-color:red;
+    box-shadow: inset 0px 0px 10px rgba(0,0,0,0.4);
+}
+.yellow {
+    background-color:yellow;
+    box-shadow: inset 0px 0px 10px rgba(0,0,0,0.4);
+}
+h1{
+    position:absolute;
+    font-family: Arial;
+    font-size:200px;
+    top:50px;
+    left:150px;
+}
