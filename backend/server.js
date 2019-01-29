@@ -154,8 +154,19 @@ gameserver.on('connection', function(socket) {
  */
 
 queueserver.on('connection', function(socket) {
+    socket.on('get players', function(game) {
+        var count = [];
+        console.log(game)
+        if(globalQueueData[game] != null) {
+            count = [game, Object.keys(globalQueueData[game]).length];
+        } else {
+            count = [game, 0];
+        }
+        socket.emit('player amount', count);
+    });
+
     socket.on('join room', function(data) {
-        var room = data.game;
+        var room = data.room;
         socket["room"] = room;
         socket["user"] = data.user;
         if (globalQueueData[room] == null) {
@@ -173,6 +184,16 @@ queueserver.on('connection', function(socket) {
         }
     });
 
+    socket.on('select game', function(data) {
+        console.log(data)
+        var invite = data["friend"];
+        if(globalQueueData[socket.room][invite] != null) {
+            var sendTo = globalQueueData[socket.room][invite][1];
+            var send = [socket.user, data["data"]];
+            queueserver.to(`${sendTo}`).emit('invited', send);
+        }
+    });
+
     socket.on('response', function(res) {
         if(res[0]){
             var sendTo = globalQueueData[socket.room][res[1]][1];
@@ -183,7 +204,7 @@ queueserver.on('connection', function(socket) {
     socket.on('disconnect', function() {
         if(socket.room != null){
             delete globalQueueData[socket.room][socket.user];
-            queueserver.to(socket.room).emit('queue', Object.keys(globalQueueData[socket.room]));
+            queueserver.to(socket.room).emit('queue', Object.keys(globalQueueData[socket.room]));          
         }
     });
 });

@@ -20,6 +20,9 @@
         gamesocket.on('game state', function(gamestate){
                     gamestate
         });
+        gamesocket.on('game init', function(init){
+                    init
+        });
         gamesocket.on('game turn', function(turn){
             if(turn == 1){
                 document.getElementById("turns").innerHTML = "Make a move!"

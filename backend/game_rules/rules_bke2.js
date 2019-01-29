@@ -17,6 +17,10 @@ exports.gameMove = function(globalGameState, room, move) {
 }
 
 exports.gameInit = function(globalGameState, room) {
+    var arr = {};
+    arr[globalGameState[room]["users"][0]] = "blue";
+    arr[globalGameState[room]["users"][1]] = "red";
+    console.log(arr);
     var users = {}
     var user0 = globalGameState[room]["users"][0];
     var user1 = globalGameState[room]["users"][1];
@@ -30,7 +34,7 @@ exports.gameInit = function(globalGameState, room) {
         users[user1] = "X"
         globalGameState[room]["active"] = 1;
     }
-    return users;
+    return arr;
 }
 
 exports.gameEnd = function(socket, room, globalGameState, server) {
