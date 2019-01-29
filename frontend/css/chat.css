@@ -44,6 +44,8 @@ html, body{
     height:calc(100vh - 130px);
     overflow-y:auto;
     overflow-wrap: break-word;
+    box-sizing: border-box;
+    padding-right:10px;
 }
 h1 {
     margin-left:20px;

@@ -1,0 +1,50 @@
+<!doctype html>
+<html>
+  <head>
+    <title>TEMPLATE</title>
+    <link rel="stylesheet" type="text/css" href="../css/private.css">
+    <link rel="stylesheet" type="text/css" href="../css/chat.css">
+</head>
+<body>
+    <!--HIDDEN FORM-->
+    <form id="hiddenform" method="POST" action="">
+        <input id="input_act_spel" type="text" name="act_spel"></input>
+        <input id="input_speler" type="text" name="speler"></input>
+    </form>
+
+    <div id="games">
+        <h1 id="players">Games:</h1>
+        <div onclick="selectGame(this)" id="bke" class="game">Boter, Kaas en Eieren</div>
+        <div onclick="selectGame(this)" id="voer" class="game">Vier op een rij</div>
+        <div onclick="selectGame(this)" class="game"></div>
+        <div onclick="selectGame(this)" class="game"></div>
+        <div onclick="selectGame(this)" class="game"></div>
+        <div onclick="selectGame(this)" class="game"></div>
+    </div>
+    <div id="chat">
+            <div id="chattext" onscroll="scrollDown(this)">
+                
+            </div>
+            <div id="scrolldown" onclick="scrollNow()">&#9660; scroll down &#9660;</div>
+            <input id="chatinput"></input>
+        </div>
+
+    <div id="modalbg">
+        <div id="modal">
+            <h3 id="modalhead"></h3>
+            <p id="modaltext"></p>
+            <div id="invitebuttons">
+                <button onclick="declineInv()">Decline invite</button>
+                <button onclick="acceptInv()">Accept invite</button>
+            </div>
+            <div id="confirmbuttons">
+                <button onclick="goToGame()">Go to game</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="http://localhost:3000/socket.io/socket.io.js"></script>
+    <script src="../js/frontend_private.js"></script>
+    <script src="../js/frontend_chat.js"></script>
+</body>
+</html>

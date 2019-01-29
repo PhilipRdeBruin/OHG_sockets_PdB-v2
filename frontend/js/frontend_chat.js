@@ -1,7 +1,7 @@
-var lh = location.hash.split('#')[1];
-var lhValues = lh.split('&');
-var room = lhValues[1];
-var user = lhValues[0];
+// var lh = location.hash.split('#')[1];
+// var lhValues = lh.split('&');
+// var room = lhValues[1];
+// var user = lhValues[0];
 
 var chatsocket = io('http://localhost:3000/chat');
 var chatData = {room: room, user: user};
