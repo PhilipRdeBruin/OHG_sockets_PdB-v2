@@ -1,7 +1,7 @@
 {
   "name": "ohg-backend-server",
-  "version": "0.3.0",
-  "description": "Backend to play realtime boardgames over the internet",
+  "version": "0.5.0",
+  "description": "Game, queue, game select and chat backend",
   "dependencies": {
     "mysql": "^2.16.0",
     "socket.io": "^2.2.0"
