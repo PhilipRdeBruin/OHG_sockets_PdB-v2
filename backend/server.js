@@ -25,6 +25,7 @@ var gamesAvailable = {
 };
 var globalGameState = [];
 var globalQueueData = [];
+var chatHistory = [];
 var connectedUsers = [];
 function randomUser(amount) {
     return Math.floor(Math.random() * amount)
@@ -209,7 +210,6 @@ queueserver.on('connection', function(socket) {
     });
 });
 
-
 /**
  * 
  * END OF QUEUE SYSTEM
@@ -220,9 +220,25 @@ queueserver.on('connection', function(socket) {
 
 chatserver.on('connection', function(socket) {
     socket.on('join room', function(data) {
+        socket["user"] = data.user;
+        var room = data.room;
+        socket["chatroom"] = room;
         socket.join(room);
+        if(chatHistory[room] != null){
+            socket.emit('chat history', chatHistory[room]);
+        } else {
+            socket.emit('chat history', []);
+        }
     });
 
+    socket.on('msg', function(msg){
+        if(chatHistory[socket.chatroom] == null){
+            chatHistory[socket.chatroom] = [];
+        }
+        msg = `<b>${socket.user}:</b> &nbsp;${msg}`
+        chatHistory[socket.chatroom].push(msg);
+        chatserver.in(socket.chatroom).emit('msg', msg);
+    });
 
     socket.on('disconnect', function() {
     });

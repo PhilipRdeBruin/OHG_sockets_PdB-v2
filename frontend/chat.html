@@ -9,23 +9,10 @@
     <div id="games">
     </div>
     <div id="chat">
-        <div id="chattext">
-            nesty: bla<br/>
-            nesty: bla<br/>
-            nesty: bla<br/>
-            nesty: bla<br/>
-            nesty: bla<br/>
-            nesty: bla<br/>
-            nesty: bla<br/>
-            nesty: bla<br/>
-            nesty: bla<br/>
-            nesty: bla<br/>
-            nesty: bla<br/>
-            nesty: bla<br/>
-            nesty: bla<br/>
-            nesty: bla<br/>
-            nesty: bla<br/>
+        <div id="chattext" onscroll="scrollDown(this)">
+            
         </div>
+        <div id="scrolldown" onclick="scrollNow()">&#9660; scroll down &#9660;</div>
         <input id="chatinput"></input>
     </div>
     <script src="http://localhost:3000/socket.io/socket.io.js"></script>
