@@ -2,7 +2,37 @@ html, body{
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif
 }
 .pointer{
-cursor:pointer;    
+cursor:pointer;   
+-webkit-touch-callout: none; 
+-webkit-user-select: none; 
+-khtml-user-select: none; 
+-moz-user-select: none; 
+-ms-user-select: none; 
+user-select: none; 
+}
+#invite{
+    display:none;
+}
+#status{
+    margin-left:auto;
+    margin-right:auto;
+}
+.queuestatus {
+    width:40px;
+    height:40px;
+    background-color:grey;
+    margin:10px;
+    float:left
+}
+.accepted {
+    background-color:green;
+}
+.declined {
+    background-color:red;
+}
+h3{
+    margin-top:0;
+    padding-top:0;
 }
 #modalbg {
 position: absolute;
@@ -14,9 +44,12 @@ left:0;
 background-color:rgba(0,0,0,0.5);
 display:none;
 }
+.selected {
+    color:blue;
+}
 #modal {
-width:300px;
-height:200px;
+width:350px;
+height:230px;
 position: relative;
 margin-left:auto;
 margin-right:auto;
@@ -30,9 +63,13 @@ box-shadow: 0px 0px 11px 0px rgba(0,0,0,0.5);
 }
 #invitebuttons {
 display:none;
+margin-left:10px;
+margin-top:20px;
 }
 #confirmbuttons {
 display:none;
+margin-left:10px;
+margin-top:20px;
 }
 #hiddenform{
 display:none;

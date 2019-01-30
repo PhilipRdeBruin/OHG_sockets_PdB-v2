@@ -179,10 +179,12 @@ queueserver.on('connection', function(socket) {
     });
 
     socket.on('invite', function(invite) {
-        if(globalQueueData[socket.room][invite] != null) {
-            var sendTo = globalQueueData[socket.room][invite][1];
-            queueserver.to(`${sendTo}`).emit('invited', socket.user);
-        }
+            invite.splice(invite.indexOf(socket.user), 1);
+            invite.unshift(socket.user);
+            for(i=0;i<invite.length;i++){
+                var sendTo = globalQueueData[socket.room][invite[i]][1];
+                queueserver.to(`${sendTo}`).emit('invited', invite);
+            }
     });
 
     socket.on('select game', function(data) {
@@ -197,8 +199,17 @@ queueserver.on('connection', function(socket) {
 
     socket.on('response', function(res) {
         if(res[0]){
-            var sendTo = globalQueueData[socket.room][res[1]][1];
-            queueserver.to(`${sendTo}`).emit('confirm', socket.user);
+            var g = res[1];
+            for(i=0;i<g.length;i++){
+                var sendTo = globalQueueData[socket.room][g[i]][1];
+                queueserver.to(`${sendTo}`).emit('confirm', socket.user);
+            }
+        } else {
+            var g = res[1];
+            for(i=0;i<g.length;i++){
+                var sendTo = globalQueueData[socket.room][g[i]][1];
+                queueserver.to(`${sendTo}`).emit('decline', socket.user);
+            }
         }
     });
 
