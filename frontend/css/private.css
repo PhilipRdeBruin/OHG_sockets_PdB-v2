@@ -59,10 +59,10 @@ display:none;
     height:calc(100vh - 200px)
 }
 .game {
-    width:100px;
-    height:100px;
+    width:calc(100vw/3*2/4 - 25px);
+    height:calc(100vw/3*2/4 - 25px);
     float:left;
-    margin:20px;
+    margin:10px 0 10px 20px;
     background-color:grey;
     box-sizing: border-box;
     padding:15px;
