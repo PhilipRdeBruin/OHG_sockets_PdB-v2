@@ -23,6 +23,7 @@ var gamesAvailable = {
     voer: [2, "[[],[],[],[],[],[],[]]", 0],
     template: [2, "[[],[],[]]", 0]
 };
+
 var globalGameState = [];
 var globalQueueData = [];
 var chatHistory = [];
@@ -184,6 +185,7 @@ queueserver.on('connection', function(socket) {
             for(i=0;i<invite.length;i++){
                 globalQueueData[socket.room][invite[i]][2] = "unavailable"
                 var sendTo = globalQueueData[socket.room][invite[i]][1];
+                globalQueueData[socket.room][invite[i]][3] = invite;
                 queueserver.to(`${sendTo}`).emit('invited', invite);
             }
             queueserver.to(socket.room).emit('queue', globalQueueData[socket.room]);
@@ -218,6 +220,12 @@ queueserver.on('connection', function(socket) {
 
     socket.on('disconnect', function() {
         if(socket.room != null){
+            if(dc = globalQueueData[socket.room][socket.user][3]){
+                for(i=0;i<dc.length;i++){
+                    var sendTo = globalQueueData[socket.room][dc[i]][1];
+                    queueserver.to(`${sendTo}`).emit('decline', socket.user);
+                }
+            }
             delete globalQueueData[socket.room][socket.user];
             queueserver.to(socket.room).emit('queue', globalQueueData[socket.room]);          
         }
