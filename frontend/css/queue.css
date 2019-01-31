@@ -71,6 +71,15 @@ display:none;
 margin-left:10px;
 margin-top:20px;
 }
+#closebuttons {
+display:none;
+margin-left:10px;
+margin-top:20px;
+}
 #hiddenform{
 display:none;
+}
+.unavailable {
+    color:red;
+    cursor:default;
 }

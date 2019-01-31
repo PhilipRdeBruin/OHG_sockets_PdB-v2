@@ -157,7 +157,6 @@ gameserver.on('connection', function(socket) {
 queueserver.on('connection', function(socket) {
     socket.on('get players', function(game) {
         var count = [];
-        console.log(game)
         if(globalQueueData[game] != null) {
             count = [game, Object.keys(globalQueueData[game]).length];
         } else {
@@ -170,25 +169,27 @@ queueserver.on('connection', function(socket) {
         var room = data.room;
         socket["room"] = room;
         socket["user"] = data.user;
+        socket["available"] = data.available;
         if (globalQueueData[room] == null) {
-            globalQueueData[room] = [];
+            globalQueueData[room] = {};
         }
         socket.join(room);
-        globalQueueData[room][data.user] = [data.user, socket.id];
-        queueserver.to(room).emit('queue', Object.keys(globalQueueData[room]));
+        globalQueueData[room][data.user] = [data.user, socket.id, socket.available];
+        queueserver.to(room).emit('queue', globalQueueData[room]);
     });
 
     socket.on('invite', function(invite) {
             invite.splice(invite.indexOf(socket.user), 1);
             invite.unshift(socket.user);
             for(i=0;i<invite.length;i++){
+                globalQueueData[socket.room][invite[i]][2] = "unavailable"
                 var sendTo = globalQueueData[socket.room][invite[i]][1];
                 queueserver.to(`${sendTo}`).emit('invited', invite);
             }
+            queueserver.to(socket.room).emit('queue', globalQueueData[socket.room]);
     });
 
     socket.on('select game', function(data) {
-        console.log(data)
         var invite = data["friend"];
         if(globalQueueData[socket.room][invite] != null) {
             var sendTo = globalQueueData[socket.room][invite][1];
@@ -205,18 +206,20 @@ queueserver.on('connection', function(socket) {
                 queueserver.to(`${sendTo}`).emit('confirm', socket.user);
             }
         } else {
+            globalQueueData[socket.room][socket.user][2] = "available"
             var g = res[1];
             for(i=0;i<g.length;i++){
                 var sendTo = globalQueueData[socket.room][g[i]][1];
                 queueserver.to(`${sendTo}`).emit('decline', socket.user);
             }
         }
+        queueserver.to(socket.room).emit('queue', globalQueueData[socket.room]);
     });
 
     socket.on('disconnect', function() {
         if(socket.room != null){
             delete globalQueueData[socket.room][socket.user];
-            queueserver.to(socket.room).emit('queue', Object.keys(globalQueueData[socket.room]));          
+            queueserver.to(socket.room).emit('queue', globalQueueData[socket.room]);          
         }
     });
 });
