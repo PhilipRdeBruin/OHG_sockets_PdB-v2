@@ -55,6 +55,7 @@ queuesocket.on('queue', function(data) {
 var invitedBy;
 
 queuesocket.on('invited', function(data) {
+    console.log(data);
     document.getElementById("modalbg").style.display = "block"
     invitedBy = data;
     acceptQueue = {};
@@ -137,7 +138,6 @@ function renderStatus() {
         }
     }
     document.getElementById("status").innerHTML = holder;
-    console.log(acceptQueue);
     if (acceptQueue[user] == "" && acceptQueue[user] != null) {
         document.getElementById("closebuttons").style.display = "none"
         document.getElementById("invitebuttons").style.display = "block"

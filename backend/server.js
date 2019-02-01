@@ -192,11 +192,13 @@ queueserver.on('connection', function(socket) {
     });
 
     socket.on('select game', function(data) {
-        var invite = data["friend"];
-        if(globalQueueData[socket.room][invite] != null) {
-            var sendTo = globalQueueData[socket.room][invite][1];
-            var send = [socket.user, data["data"]];
-            queueserver.to(`${sendTo}`).emit('invited', send);
+        var invite = data["friends"];
+        invite.splice(invite.indexOf(socket.user), 1);
+        invite.unshift(socket.user);
+        for(i=0;i<invite.length;i++){
+            var sendTo = globalQueueData[socket.room][invite[i]][1];
+            globalQueueData[socket.room][invite[i]][3] = invite;
+            queueserver.to(`${sendTo}`).emit('invited', [invite, data.data]);
         }
     });
 
