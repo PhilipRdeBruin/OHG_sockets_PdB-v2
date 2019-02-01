@@ -204,15 +204,19 @@ queueserver.on('connection', function(socket) {
         if(res[0]){
             var g = res[1];
             for(i=0;i<g.length;i++){
-                var sendTo = globalQueueData[socket.room][g[i]][1];
-                queueserver.to(`${sendTo}`).emit('confirm', socket.user);
+                if(globalQueueData[socket.room][g[i]] != null && globalQueueData[socket.room][g[i]][1] != null){
+                    var sendTo = globalQueueData[socket.room][g[i]][1]
+                    queueserver.to(`${sendTo}`).emit('confirm', socket.user);
+                }
             }
         } else {
             globalQueueData[socket.room][socket.user][2] = "available"
             var g = res[1];
             for(i=0;i<g.length;i++){
-                var sendTo = globalQueueData[socket.room][g[i]][1];
-                queueserver.to(`${sendTo}`).emit('decline', socket.user);
+                if(globalQueueData[socket.room][g[i]] != null && globalQueueData[socket.room][g[i]][1] != null){
+                    var sendTo = globalQueueData[socket.room][g[i]][1]
+                    queueserver.to(`${sendTo}`).emit('decline', socket.user);
+                }
             }
         }
         queueserver.to(socket.room).emit('queue', globalQueueData[socket.room]);
@@ -222,8 +226,10 @@ queueserver.on('connection', function(socket) {
         if(socket.room != null){
             if(dc = globalQueueData[socket.room][socket.user][3]){
                 for(i=0;i<dc.length;i++){
-                    var sendTo = globalQueueData[socket.room][dc[i]][1];
-                    queueserver.to(`${sendTo}`).emit('decline', socket.user);
+                    if(globalQueueData[socket.room][dc[i]] != null && globalQueueData[socket.room][dc[i]][1] != null){
+                        var sendTo = globalQueueData[socket.room][dc[i]][1];
+                        queueserver.to(`${sendTo}`).emit('decline', socket.user);
+                    }
                 }
             }
             delete globalQueueData[socket.room][socket.user];

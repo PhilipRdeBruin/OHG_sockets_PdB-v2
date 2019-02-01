@@ -57,6 +57,7 @@ var invitedBy;
 queuesocket.on('invited', function(data) {
     document.getElementById("modalbg").style.display = "block"
     invitedBy = data;
+    acceptQueue = {};
     for (i = 0; i < data.length; i++) {
         acceptQueue[data[i]] = "";
     }
@@ -85,6 +86,7 @@ queuesocket.on('confirm', function(data) {
 queuesocket.on('decline', function(data) {
     acceptQueue[data] = "declined";
     renderStatus();
+    document.getElementById("confirmbuttons").style.display = "none";
 });
 
 function invitePlayers() {
@@ -135,7 +137,8 @@ function renderStatus() {
         }
     }
     document.getElementById("status").innerHTML = holder;
-    if (acceptQueue[user] == "") {
+    console.log(acceptQueue);
+    if (acceptQueue[user] == "" && acceptQueue[user] != null) {
         document.getElementById("closebuttons").style.display = "none"
         document.getElementById("invitebuttons").style.display = "block"
     }
