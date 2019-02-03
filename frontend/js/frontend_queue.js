@@ -102,6 +102,7 @@ function declineInv() {
 };
 
 function goToGame() {
+    queuesocket.emit('to game', true);
     document.getElementById("modalbg").style.display = "none";
     document.getElementById("confirmbuttons").style.display = "none";
     document.getElementById("closebuttons").style.display = "none"

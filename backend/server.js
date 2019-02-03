@@ -224,11 +224,15 @@ queueserver.on('connection', function(socket) {
         queueserver.to(socket.room).emit('queue', globalQueueData[socket.room]);
     });
 
+    socket.on('to game', function() {
+        socket["togame"] = true;
+    });
+
     socket.on('disconnect', function() {
         if(socket.room != null){
             if(dc = globalQueueData[socket.room][socket.user][3]){
                 for(i=0;i<dc.length;i++){
-                    if(globalQueueData[socket.room][dc[i]] != null && globalQueueData[socket.room][dc[i]][1] != null){
+                    if(globalQueueData[socket.room][dc[i]] != null && globalQueueData[socket.room][dc[i]][1] != null && !socket.togame){
                         var sendTo = globalQueueData[socket.room][dc[i]][1];
                         queueserver.to(`${sendTo}`).emit('decline', socket.user);
                     }
