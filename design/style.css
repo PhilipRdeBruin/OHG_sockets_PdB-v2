@@ -308,3 +308,181 @@ h5{
     margin:2vw 0 0 0;
     background-color:rgba(0,0,0,0.5);
 }
+
+
+#chattext{
+    position:relative;
+    margin-top:40px;
+    margin-left:10%;
+    margin-right:10%;
+    color:white;
+    height:calc((100vh - (9vh + 20px + 4vw)) - 130px);
+    overflow-y:auto;
+    overflow-wrap: break-word;
+    box-sizing: border-box;
+    padding-right:10px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+#chatinput {
+    margin-left:10%;
+    height:50px;
+    margin-top:10px;
+    background-color:lightgray;
+    border:none;
+    color:black;
+    font-weight: 700;
+    font-size: 18px;
+    padding:10px;
+    box-sizing: border-box;
+    width:80%;
+}
+#scrolldown {
+    position:relative;
+    z-index:10px;
+    width:calc(80% - 5px);
+    margin-left:10%;
+    height:40px;
+    box-sizing: border-box;
+    padding-top:2px;
+    margin-top:-40px;
+    background-color: rgba(0,0,0,0.5);
+    color:white;
+    font-weight: 700;
+    text-align: center;
+    cursor:pointer;
+    display:none;
+}
+
+/* SPEL PAGINA */
+
+#spel {
+    width:100%;
+    max-width:1200px;
+    margin: 0 auto 0 auto;
+}
+#spelinfo, #spelers {
+    height:200px;
+    float:left;
+    margin-left:2vw;
+    margin-top:2vw;
+    height:calc(100vh - (9vh + 20px) - 4vw);
+}
+
+#spelers{
+    width:calc(45% - 3vw);
+}
+#spelinfo{
+    width:calc(55% - 3vw);
+    background-color:rgba(0,0,0,0.7);
+    -webkit-box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.5);
+    -moz-box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.5);
+    box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.5);
+}
+
+#spelimg , #vs{
+    position:relative;
+    height:40%;
+    width:100%;
+    margin:0;
+    padding:0;
+    background-size:cover;
+    background-position: center bottom;
+}
+#vs{
+    background-image: url('vs.jpg');
+    -webkit-box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.5);
+    -moz-box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.5);
+    box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.5);
+    background-position: center center;
+}
+.schaak {
+    background-image: url('schaken.jpg')
+}
+
+#spelinfo p {
+    margin-top:5%;
+    height:50%;
+    width:85%;
+    padding-right:20px;
+    color:white;
+    overflow-y:auto;
+    margin-left:auto;
+    margin-right:auto;
+    line-height:2;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+h6{
+    font-family: 'Lato', sans-serif;
+    padding:0;
+    margin:0;
+    font-size:7vmin;
+    color:white;
+    position:absolute;
+    width:calc(85% + 20px);
+    padding-left:calc((15% - 20px) /2);
+    padding-bottom:1vmin;
+    bottom:0;
+}
+.onlinespacer{
+    height:3%;
+    width:100%;
+}
+.speler{
+    width: 98%;
+    height: 36px;
+    background-color:rgba(0,0,0,0.6);
+    -webkit-box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.5);
+    -moz-box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.5);
+    box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.5);
+    cursor:pointer;
+}
+.spelerstatus{
+    width:16px;
+    height:16px;
+    border-radius:18px;
+    margin: 10px 0 0 20px;
+    padding:0px;
+    float:left; 
+}
+.available{
+    background-color:rgb(35, 201, 35);
+}
+.unavailable{
+    background-color:rgb(221, 43, 43);
+}
+.speler p{
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    float:left;
+    margin:0;
+    font-size:18px;
+    padding:0;
+    color:white;
+    font-weight: 600;
+    padding: 5px;
+    margin-left:20px;
+
+}
+#online{
+    height:58%;
+    width:100%;
+    overflow-y:auto;
+}
+
+.invite{
+ height:100%;
+ width:30%;
+ background-color: rgba(0,0,0,0.7);
+ float:right;
+}
+.invite p {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    float:left;
+    margin:0;
+    font-size:17px;
+    padding:0;
+    color:white;
+    font-weight: 700;
+    padding: 6px 0 7px 0;
+    width:100%;
+    text-align: center;
+}

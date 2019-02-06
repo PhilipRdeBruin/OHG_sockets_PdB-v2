@@ -36,7 +36,6 @@ function notification(en) {
 }
 
 function resSite() {
-    console.log("res")
 	// variables
     var containerW = document.getElementById('games').offsetWidth;
     containerW = containerW - (window.innerWidth/100*2);
@@ -65,8 +64,4 @@ function resSite() {
 		imgBlok[i].width = divWidth;
 	}
 }
-window.addEventListener('resize', function(event){
-    resSite()
-  });
-    resSite()
 
