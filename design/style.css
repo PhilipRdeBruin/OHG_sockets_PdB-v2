@@ -534,5 +534,58 @@ h6{
   }
   #ohg{
       width:100%;
-      margin-top:40vh;
+      margin-top:35vh;
   }
+  #slogan{
+      width:100%;
+      margin:0;
+  }
+  #slogan p{
+    font-family: 'Lato', sans-serif;
+    padding:0;
+    margin:0;
+    color:white;
+    font-size:4.5vmin;
+    margin-top:2vmin;
+    width:100%;
+    text-align: center;
+  }
+  #landr{
+      margin: 6vmin auto 0 auto;
+      height:calc(3vmin + 20px);
+      width:calc(20% + 180px);
+  }
+  #login, #register {
+    width:calc(20% + 90px);
+    height:100%;
+    border-radius:30px;
+    border-style: solid;
+    border-width: 5px;
+    border-color: #108ea7;
+    transition: background-color 0.5s ease-in-out
+  }
+  #login p, #register p{
+    width:100%;
+    text-align: center;
+    color:white;
+    font-weight:700;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size:3vmin;
+    margin:0;
+    padding:5px;
+    cursor:pointer;
+  }
+  #login {
+    float:left;
+  }
+  #login:hover{
+    background-color:#108ea7
+  }
+  #register:hover{
+      background-color:transparent;
+  }
+  #register{
+    float:right;
+    background-color:#108ea7
+  }
+
