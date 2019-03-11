@@ -2,29 +2,10 @@
 // TEMPLATE RULESET
 //
 
-exports.gameInit = function(globalGameState, room) {
-    var users = {}
-    var user0 = globalGameState[room]["users"][0];
-    var user1 = globalGameState[room]["users"][1];
-    
-    userC = user0.split("%");
-    console.log("userC[0] = " + userC[0] + ", userC[1] = " + userC[1]);
-    if(userC[1] == "codemaster") {
-        users[user0] = "codemaster";
-        users[user1] = "codekraker";
-        globalGameState[room]["active"] = 0;
-    } else {
-        users[user0] = "codekraker";
-        users[user1] = "codemaster";
-        globalGameState[room]["active"] = 1;
-    }
-    return users;
-}
-
 exports.gameMove = function(globalGameState, room, move) {
     console.log(move);
     // GET current gamestate and active player
-    var gamestate = move; //JSON.parse(globalGameState[room]["gamestate"]);
+    var gamestate = JSON.parse(globalGameState[room]["gamestate"]);
     var currentPLayer = globalGameState[room]["active"]; 
     
 
@@ -33,19 +14,23 @@ exports.gameMove = function(globalGameState, room, move) {
     // globalGameState[room]["result"] = winCon(gamestate, currentPLayer);
 
     // SUBMIT new gamestate
+    gamestate = JSON.stringify(gamestate);
+    globalGameState[room]["gamestate"] = gamestate;
+}
 
-    l = gamestate.length - 1;
-    tp = gamestate[l][0];
-    if (tp == 1 || tp == 3) {
-        globalGameState[room]["count"]--;
+exports.gameInit = function(globalGameState, room) {
+    var init = "";
+    var arr = {};
+
+    var kleurArr = ["blauw", "geel", "groen", "rood"];
+
+    arr['active'] = globalGameState[room]["active"];
+
+    for (i=0; i<4; i++) {
+        arr[globalGameState[room]["users"][i]] = kleurArr[i];
     }
 
-    // console.log("voor stringify:");
-    // console.log(gamestate);
-    gamestate = JSON.stringify(gamestate);
-    // console.log("na stringify:");
-    // console.log(gamestate);
-    globalGameState[room]["gamestate"] = gamestate;
+    return arr;
 }
 
 exports.gameEnd = function(socket, room, globalGameState, server) {

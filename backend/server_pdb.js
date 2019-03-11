@@ -18,9 +18,7 @@ var db = mysql.createConnection({
 var gamesAvailable = {
     bke: [2, '[[0,0,0],[0,0,0],[0,0,0]]', 0],
     bke2: [2, '[[0,0,0],[0,0,0],[0,0,0]]', 0],
-    // mastermind: [2, '[[],[],[]]', 0],
-    mastermind: [2, '[]', 0],
-    // mastermind: [2, "[[],[],[],[],[],[],[],[],[],[],[]]", 0],
+    mastermind: [2, '[[],[],[]]', 0],
     mejn: [4, '[]', 0],
     mejn2: [2, '[]', 0],
     mejn3: [3, '[]', 0],
@@ -29,10 +27,8 @@ var gamesAvailable = {
     voer: [2, "[[],[],[],[],[],[],[]]", 0],
     template: [2, "[[],[],[]]", 0]
 };
-
 var globalGameState = [];
 var globalQueueData = [];
-var chatHistory = [];
 var connectedUsers = [];
 function randomUser(amount) {
     return Math.floor(Math.random() * amount)
@@ -41,6 +37,7 @@ function randomUser(amount) {
 // USER CONNECT
 gameserver.on('connection', function(socket) {
     // JOIN ROOM
+    // console.log("hallo");
     socket.on('join room', function(gData) {
         if(Object.keys(gamesAvailable).indexOf(gData.game) !== -1){
             connectedUsers[gData.user] = socket.id;
@@ -162,124 +159,36 @@ gameserver.on('connection', function(socket) {
  */
 
 queueserver.on('connection', function(socket) {
-    socket.on('get players', function(game) {
-        var count = [];
-        if(globalQueueData[game] != null) {
-            count = [game, Object.keys(globalQueueData[game]).length];
-        } else {
-            count = [game, 0];
-        }
-        socket.emit('player amount', count);
-    });
-
     socket.on('join room', function(data) {
-        var room = data.room;
+        var room = data.game;
         socket["room"] = room;
         socket["user"] = data.user;
-        socket["available"] = data.available;
         if (globalQueueData[room] == null) {
-            globalQueueData[room] = {};
+            globalQueueData[room] = [];
         }
         socket.join(room);
-        globalQueueData[room][data.user] = [data.user, socket.id, socket.available];
-        queueserver.to(room).emit('queue', globalQueueData[room]);
+        globalQueueData[room][data.user] = [data.user, socket.id];
+        queueserver.to(room).emit('queue', Object.keys(globalQueueData[room]));
     });
 
     socket.on('invite', function(invite) {
-            invite.splice(invite.indexOf(socket.user), 1);
-            invite.unshift(socket.user);
-            for(i=0;i<invite.length;i++){
-                globalQueueData[socket.room][invite[i]][2] = "unavailable"
-                var sendTo = globalQueueData[socket.room][invite[i]][1];
-                globalQueueData[socket.room][invite[i]][3] = invite;
-                queueserver.to(`${sendTo}`).emit('invited', invite);
-            }
-            queueserver.to(socket.room).emit('queue', globalQueueData[socket.room]);
-    });
-
-    socket.on('select game', function(data) {
-        var invite = data["friends"];
-        invite.splice(invite.indexOf(socket.user), 1);
-        invite.unshift(socket.user);
-        for(i=0;i<invite.length;i++){
-            var sendTo = globalQueueData[socket.room][invite[i]][1];
-            globalQueueData[socket.room][invite[i]][3] = invite;
-            queueserver.to(`${sendTo}`).emit('invited', [invite, data.data]);
+        if(globalQueueData[socket.room][invite] != null) {
+            var sendTo = globalQueueData[socket.room][invite][1];
+            queueserver.to(`${sendTo}`).emit('invited', socket.user);
         }
     });
 
     socket.on('response', function(res) {
         if(res[0]){
-            var g = res[1];
-            for(i=0;i<g.length;i++){
-                if(globalQueueData[socket.room][g[i]] != null && globalQueueData[socket.room][g[i]][1] != null){
-                    var sendTo = globalQueueData[socket.room][g[i]][1]
-                    queueserver.to(`${sendTo}`).emit('confirm', socket.user);
-                }
-            }
-        } else {
-            globalQueueData[socket.room][socket.user][2] = "available"
-            var g = res[1];
-            for(i=0;i<g.length;i++){
-                if(globalQueueData[socket.room][g[i]] != null && globalQueueData[socket.room][g[i]][1] != null){
-                    var sendTo = globalQueueData[socket.room][g[i]][1]
-                    queueserver.to(`${sendTo}`).emit('decline', socket.user);
-                }
-            }
+            var sendTo = globalQueueData[socket.room][res[1]][1];
+            queueserver.to(`${sendTo}`).emit('confirm', socket.user);
         }
-        queueserver.to(socket.room).emit('queue', globalQueueData[socket.room]);
-    });
-
-    socket.on('to game', function() {
-        socket["togame"] = true;
     });
 
     socket.on('disconnect', function() {
         if(socket.room != null){
-            if(dc = globalQueueData[socket.room][socket.user][3]){
-                for(i=0;i<dc.length;i++){
-                    if(globalQueueData[socket.room][dc[i]] != null && globalQueueData[socket.room][dc[i]][1] != null && !socket.togame){
-                        var sendTo = globalQueueData[socket.room][dc[i]][1];
-                        queueserver.to(`${sendTo}`).emit('decline', socket.user);
-                    }
-                }
-            }
             delete globalQueueData[socket.room][socket.user];
-            queueserver.to(socket.room).emit('queue', globalQueueData[socket.room]);          
+            queueserver.to(socket.room).emit('queue', Object.keys(globalQueueData[socket.room]));
         }
-    });
-});
-
-/**
- * 
- * END OF QUEUE SYSTEM
- * 
- * START OF CHAT SERVER
- * 
- */
-
-chatserver.on('connection', function(socket) {
-    socket.on('join room', function(data) {
-        socket["user"] = data.user;
-        var room = data.room;
-        socket["chatroom"] = room;
-        socket.join(room);
-        if(chatHistory[room] != null){
-            socket.emit('chat history', chatHistory[room]);
-        } else {
-            socket.emit('chat history', []);
-        }
-    });
-
-    socket.on('msg', function(msg){
-        if(chatHistory[socket.chatroom] == null){
-            chatHistory[socket.chatroom] = [];
-        }
-        msg = `<b>${socket.user}:</b> &nbsp;${msg}`
-        chatHistory[socket.chatroom].push(msg);
-        chatserver.in(socket.chatroom).emit('msg', msg);
-    });
-
-    socket.on('disconnect', function() {
     });
 });

@@ -1,0 +1,309 @@
+ 
+.rij {
+    clear           : left;
+    width           : 100%;
+    height          : 8.925%;
+/*    border          : 1px solid grey; */
+}
+
+.veld {
+    float           : left;
+    width           : 8.925%;
+    height          : 100%;
+    /* border          : 1px solid grey; */
+}
+
+.pinkleur {
+	width			: 28px;	
+	height			: 28px;
+}
+
+#beelscherm {
+    width           : 100%;
+}
+
+#zij-kolom {
+    float               : left;
+    width               : 165px;
+}
+
+#card-b {
+    margin              : auto;
+    width               : 90%;
+}
+
+#card-o {
+    margin              : 50px auto auto auto;
+    width               : 90%;
+}
+
+.card-empty {
+    height              : 260px;
+}
+
+#chatbox, #dobbelbox {
+    margin-top          : 50px;
+    margin-left         : 5%;
+    width               : 90%;
+    height              : 260px;
+    text-align          : center;
+}
+
+#chatbox {
+    font-size           : 14px;
+    color               : #444;
+    background          : #ddd;
+    border              : 1px solid #888;
+}
+
+#dobbelbox {
+    font-size           : 18px;
+    color               : #bbb;
+    background          : #360;
+    border              : 4px solid #420;
+}
+
+#dobbelkader {
+    width               : 95%;
+    height              : 252px;
+    border              : 4px solid #360;
+    background          : #360;
+}
+
+#foto-hdr1, #foto-hdr2, #foto-hdr3, #foto-hdr4 {
+    margin-top          : 25px;
+    padding             : 3px 10px;
+    font-size           : 16px;
+    font-weight         : bold;
+    text-align          : center;
+    color               : #afc;
+    background          : #040;
+}
+
+.foto-img {
+    margin-top          : 0px;
+    width               : 100%;
+    height              : auto;
+}
+
+#speelbord {
+    float               : left;
+    /* display         	: block; */
+    /* margin           : auto; */
+    width           	: 880px;
+    height          	: 886px;
+	padding-top			: 10px;
+	padding-left		: 20px;
+    background-image    : url("mejn.png");
+	background-size		: cover;
+}
+
+#speelbord2 {
+	display         	: block;
+	width				: 870px;
+	height				: 870px;
+/*	border				: 2px solid blue; */
+}
+
+.dragcl {
+	width				: 30px;
+	height				: 30px;
+}
+
+.dropholder {
+	float				: left;
+} 
+
+.dropid {
+
+}
+
+#dobbelsteen {
+    margin-top          : 35px;
+    width               : 40%;
+    height              : auto;
+}
+
+#dobbelen {
+    margin-top          : 35px;
+    padding             : 3px 10px 2px 10px;
+    font-size           : 18px;
+    /* font-weight         : bold; */
+    color               : #ddf;
+    background          : #24a;
+    border-radius       : 5px;
+}
+
+#dobbelen:hover {
+    cursor              : pointer;
+}
+
+.rondwit {
+    background-image		: url("afbeeldingen/rondjes/Rondje_wit.png");
+    background-size			: contain;
+}
+
+.rondblauw {
+    background-image		: url("afbeeldingen/rondjes/Rondje_blauw.png");
+    background-size			: contain;
+}
+
+.rondblauw_A {
+    background-image		: url("afbeeldingen/rondjes/Rondje_blauw_A.png");
+    background-size			: contain;
+}
+
+.rondblauw-a {
+    background-image		: url("afbeeldingen/rondjes/Rondje_blauw-a.png");
+    background-size			: contain;
+}
+
+.rondblauw-b {
+    background-image		: url("afbeeldingen/rondjes/Rondje_blauw-b.png");
+    background-size			: contain;
+}
+
+.rondblauw-c {
+    background-image		: url("afbeeldingen/rondjes/Rondje_blauw-c.png");
+    background-size			: contain;
+}
+
+.rondblauw-d {
+    background-image		: url("afbeeldingen/rondjes/Rondje_blauw-d.png");
+    background-size			: contain;
+}
+
+.rondgeel {
+    background-image		: url("afbeeldingen/rondjes/Rondje_geel.png");
+    background-size			: contain;
+}
+
+.rondgeel_A {
+    background-image		: url("afbeeldingen/rondjes/Rondje_geel_A.png");
+    background-size			: contain;
+}
+
+.rondgeel-a {
+    background-image		: url("afbeeldingen/rondjes/Rondje_geel-a.png");
+    background-size			: contain;
+}
+
+.rondgeel-b {
+    background-image		: url("afbeeldingen/rondjes/Rondje_geel-b.png");
+    background-size			: contain;
+}
+
+.rondgeel-c {
+    background-image		: url("afbeeldingen/rondjes/Rondje_geel-c.png");
+    background-size			: contain;
+}
+
+.rondgeel-d {
+    background-image		: url("afbeeldingen/rondjes/Rondje_geel-d.png");
+    background-size			: contain;
+}
+
+.rondgroen {
+    background-image		: url("afbeeldingen/rondjes/Rondje_groen.png");
+    background-size			: contain;
+}
+
+.rondgroen_A {
+    background-image		: url("afbeeldingen/rondjes/Rondje_groen_A.png");
+    background-size			: contain;
+}
+
+.rondgroen-a {
+    background-image		: url("afbeeldingen/rondjes/Rondje_groen-a.png");
+    background-size			: contain;
+}
+
+.rondgroen-b {
+    background-image		: url("afbeeldingen/rondjes/Rondje_groen-b.png");
+    background-size			: contain;
+}
+
+.rondgroen-c {
+    background-image		: url("afbeeldingen/rondjes/Rondje_groen-c.png");
+    background-size			: contain;
+}
+
+.rondgroen-d {
+    background-image		: url("afbeeldingen/rondjes/Rondje_groen-d.png");
+    background-size			: contain;
+}
+
+.rondrood {
+    background-image		: url("afbeeldingen/rondjes/Rondje_rood.png");
+    background-size			: contain;
+}
+
+.rondrood_A {
+    background-image		: url("afbeeldingen/rondjes/Rondje_rood_A.png");
+    background-size			: contain;
+}
+
+.rondrood-a {
+    background-image		: url("afbeeldingen/rondjes/Rondje_rood-a.png");
+    background-size			: contain;
+}
+
+.rondrood-b {
+    background-image		: url("afbeeldingen/rondjes/Rondje_rood-b.png");
+    background-size			: contain;
+}
+
+.rondrood-c {
+    background-image		: url("afbeeldingen/rondjes/Rondje_rood-c.png");
+    background-size			: contain;
+}
+
+.rondrood-d {
+    background-image		: url("afbeeldingen/rondjes/Rondje_rood-d.png");
+    background-size			: contain;
+}
+
+.sz30 {
+	margin-top				: 36px;
+	margin-left				: 28px;
+	padding-left			: 0px;
+	width					: 26px;
+	height					: 26px;
+	background-repeat		: no-repeat;
+}
+
+.sz50 {
+	margin-top				: 28px;
+    margin-left				: 19px;
+    width					: 35px;
+    height					: 35px;
+    padding-top             : 10px;
+    padding-left            : 10px;
+	background-repeat		: no-repeat;
+}
+
+.rondtekst30 {
+	margin-left				: 8px;
+	font-size				: 20px;
+	font-weight				: bold;
+}
+
+.rondtekst50 {
+	margin-left				: 10px;
+	font-size				: 32px;
+	font-weight				: bold;
+}
+
+.kleur {
+    cursor                  : pointer;
+}
+
+#turns {
+    padding         : 3px 10px 2px 10px;
+    font-size       : 14px;
+    text-align      : center;
+    color           : #028;
+    background      : #bbb;
+    border          : 1px solid #aaa;
+    border-radius   : 7px;
+}
