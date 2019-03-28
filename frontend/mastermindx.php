@@ -51,8 +51,11 @@
         </div>
         <div id="knoppen"><script>drawbuttons();</script></div>
         <div id="doosjes">
-            <div id="kleurenpalet"> <div id="hulppalet"><script>drawcolors();</script></div></div>
-            <div id="pinnen"><script>drawblackwhite();</script></div>
+            <div id="kleurenpalet"><div id="hulppalet"><script>drawcolors();</script></div></div>
+            <div id="pinnen">
+                <script>drawblackwhite();</script>
+                <button id="calcpins" onclick="plaatspins(true)">automatisch bepalen</button>
+            </div>
         </div>
 
         <div id="nieuwspel">
@@ -74,6 +77,7 @@
             voornaam = document.getElementById("gebrvoornaam").innerHTML;
             naam = document.getElementById("gebrnaam").innerHTML;
             rol = document.getElementById("rol").innerHTML;
+            gamestate0 = document.getElementById("gamestate0").innerHTML;
             user += "%" + rol;      
 
             document.getElementById("turns").innerHTML = "Welkom " + voornaam + ",<br/>wacht s.v.p. op uw beurt...";
@@ -81,6 +85,7 @@
 
             if (rol == "codemaster") {
                 document.getElementById("cover").style.visibility = "hidden";
+                document.getElementById("covertgl").style.visibility = "hidden";
             } else {
                 document.getElementById("cover").style.visibility = "visible";
             }
@@ -97,6 +102,21 @@
             socket.on('game init', function(init) {
                 console.log("socket.on/game init:");
                 logInit(init);
+                console.log("socket.on/game init: gamestate0 = " + gamestate0);
+                if (gamestate0[0] == "[") {
+                    statusArr2 = JSON.parse(gamestate0);
+                    console.log("socket.on/game init: statusArr2 = " + statusArr2);
+                    l = statusArr2.length - 1;
+                    tp = statusArr2[l][0];
+                    beurt = statusArr2[l][1];
+                    if (tp == 4 && l < 10) {
+                        beurt++;
+                        statusArr2[beurt] = [];
+                        statusArr2[beurt][0] = 1;
+                        statusArr2[beurt][1] = beurt;
+                    }
+                    makeMove(statusArr2);
+                }
             });
 
 // -----------------------------------------------------------------------------------------------------------
@@ -115,12 +135,14 @@
 
                     // converteer laatste (rij-) element van gamestate (array) 
                     // naar associatieve array ygsi[];
+                    xgsi = splitGamestate(statusArr2, 0);
                     ygsi = splitGamestate(statusArr2, l);
                     tp = (ygsi['type'] == undefined) ? 0 : ygsi['type'];
                     brt = (ygsi['beurt'] == undefined) ? 0 : ygsi['beurt'];
 
                     // if (blog) { consoleLog(ygsi); }
 
+                    console.log("binnen 'socket.on': nu aanroepen functie 'vulrijenSpeelbord'...");
                     vulrijenSpeelbord(npos, brt, statusArr2, ygsi);
                 }
             });

@@ -1,8 +1,13 @@
 
 function vulrijenSpeelbord(npos, brt, statarr, ygsi) {
+    console.log("binnen functie 'vulrijenSpeelbord: beurt = " + brt);
     for (i = 0; i <= brt; i++) {
         verwijderrij(npos, i);
-        if (i < brt) {
+        console.log("binnen functie 'vulrijenSpeelbord: voor def van 'viscover'...");
+        viscover = document.getElementById("cover").style.visibility;
+        console.log("binnen functie 'vulrijenSpeelbord: i = " + i + ", rol = " + rol + ", viscover = " + viscover);
+        if (i > 0 && i < brt || i == 0 && (rol == "codemaster" || viscover == "hidden")) {
+            console.log("binnen functie 'vulrijenSpeelbord': vullen rondjes...");
             for (j = 1; j <= npos; j++) {
                 ij = (i == 0) ? "0" + j : 10 * i + j;
                 xkl = statarr[i][j + 1];
@@ -13,7 +18,8 @@ function vulrijenSpeelbord(npos, brt, statarr, ygsi) {
                     dropje.appendChild(knopkloon);                               
                 }
             }
-        } else {
+        } else if (i > 0 && i == brt || brt == 0 && i == 0 && (rol == "codemaster" || viscover == "hidden")) {
+            console.log("binnen functie 'vulrijenSpeelbord': vullen rondjes...");
             for (j = 1; j <= npos; j++) {
                 ij = (i == 0) ? "0" + j : 10 * i + j;
                 xkl = ygsi['pos' + j];
@@ -23,8 +29,32 @@ function vulrijenSpeelbord(npos, brt, statarr, ygsi) {
                     knopkloon = knopje.cloneNode(true);
                     dropje.appendChild(knopkloon);                               
                 }
-            }            
+            }           
         }
+
+        nzw = statarr[i][8];
+        nwi = statarr[i][9];
+        czw = 0;
+
+        if (nzw > 0) {
+            knoppin = document.getElementById("zwartwitid1");
+            for (j = 1; j <= nzw; j++) {
+                czw++;
+                ij = (i == 0) ? "0" + j : 10 * i + j;
+                droppin = document.getElementById("pinid" + ij);
+                pinkloon = knoppin.cloneNode(true);
+                droppin.appendChild(pinkloon);
+            }
+        }
+        if (nwi > 0) {
+            knoppin = document.getElementById("zwartwitid6");
+            for (j = czw + 1; j <= czw + nwi; j++) {
+                ij = (i == 0) ? "0" + j : 10 * i + j;
+                droppin = document.getElementById("pinid" + ij);
+                pinkloon = knoppin.cloneNode(true);
+                droppin.appendChild(pinkloon);
+            }
+        }      
     }
 }
 
@@ -32,6 +62,7 @@ function verwijderrij(ni, i) {
     for (j = 1; j <= ni; j++) {
         ij = (i == 0) ? "0" + j : 10 * i + j;
         $("#dropid" + ij).empty();
+        $("#pinid" + ij).empty();
     }
 }
 
@@ -56,25 +87,18 @@ function procesturn(turn) {
         document.getElementById("turns").innerHTML = "Einde spel.";
     }
 
-    if (statusArr2 != undefined) {
-        l = statusArr2.length - 1;
-        tp0 = (rol == "codekraker") ? 0 : 2;
-        tp = (l >= 0) ? statusArr2[l][0] : tp0;
+    if (statusArr2 == undefined || statusArr2.length == 0) { 
+        l = 0; tp = 3; 
     } else {
-        l = 0; tp = 2;
+        l = statusArr2.length - 1;
+        if (statusArr2[l][0] == 2) {
+            statusArr2[l][0] = 3;
+        } else if (statusArr2[l][0] == 4) {
+            statusArr2[l][0] = 1;
+        }
+        tp = statusArr2[l][0];
+        beurt = statusArr2[l][1];
     }
-
-    if (tp == 4) { beurt++; l++; }
-    tp = (tp == 4) ? 1 : tp + 1;
-
-    if (blog) { console.log("in procesturn: l = " + l); }
-    statusArr2[l] = [];
-    statusArr2[l][0] = tp;
-    statusArr2[l][1] = beurt;
-    if (blog) { console.log("procesturn: statusArr2[0] = "); }
-    if (blog) { console.log(statusArr2[0]); }
-    if (blog) { console.log("procesturn: statusArr2[" + l + "] = "); }
-    if (blog) { console.log(statusArr2[l]); }
 
     visHide(beurt, rol, tp);
 }
@@ -84,33 +108,53 @@ function procesturn(turn) {
 
 
 function visHide(brt, rol, tp) {
-    hkl = 500; hpi = 625;
-    if (brt > 0) {
-        h = 60 * (brt - 1) + 25;
-        h1px = (h <= hkl) ? h + "px" : hkl + "px";
-        h2px = (h <= hpi) ? h + "px" : hpi + "px";
+
+    // nzw = statusArr2[brt][8];
+    if (brt >= 0) {
+        console.log("in visHide: Hallo...");
+        console.log("in visHide: brt, statusArr2[brt], statusArr2[brt][8]] = " + brt + ", " + statusArr2[brt] + ", ");
+    }
+    nzw = (brt >= 0 && statusArr2[brt] != undefined) ? statusArr2[brt][8] : 0;
+    if (nzw == 5) { 
+        hideAll(); 
     } else {
-        h1px = hkl + "px"; 
-        h2px = hpi + "px";
+        hkl = 500; hpi = 605;
+        if (brt > 0) {
+            h1 = 60 * (brt - 1) + 25;
+            h1px = (h1 <= hkl) ? h1 + "px" : hkl + "px";
+            h2 = 25; // 60 * (brt - 1) + 25;
+            h2px = (h2 <= hpi) ? h2 + "px" : hpi + "px";
+        } else {
+            h1px = hkl + "px"; 
+            h2px = hpi + "px";
+        }
+        bviskl = (rol == "codemaster" && brt == 0 && tp == 3 || rol == "codekraker" && brt > 0 && tp == 1) ? "visible" : "hidden";
+        bvispi = (rol == "codemaster" && brt > 0 && tp == 3) ? "visible" : "hidden";
+
+        if (blog) { console.log("in procesturn:"); }
+        if (blog) { console.log("brt, rol, tp, bviskl, bvispi, h = " + brt + ", " + rol + ", " + tp + ", " + bviskl + ", " + bvispi + ", " + h1px); }
+
+        if (brt > 0) {
+            brtmin = brt - 1;
+            document.getElementById("knop" + brtmin).style.visibility = "hidden"; 
+        }
+        if (tp == 1 && rol == "codekraker" || tp == 3 && rol == "codemaster") {
+            document.getElementById("knop" + brt).style.visibility = "visible";
+        }            
+
+        document.getElementById("kleurenpalet").style.visibility = bviskl;
+        document.getElementById("kleurenpalet").style.marginTop = h1px;
+        document.getElementById("pinnen").style.visibility = bvispi;
+        document.getElementById("pinnen").style.marginTop = h2px;
+    }    
+}
+
+function hideAll() {
+    document.getElementById("kleurenpalet").style.visibility = hidden;
+    document.getElementById("pinnen").style.visibility = hidden;
+    for (i = 0; i <= 10; i++) {
+        document.getElementById("knop" + i).style.visibility = "hidden";
     }
-    bviskl = (rol == "codemaster" && brt == 0 && tp == 3 || rol == "codekraker" && brt > 0 && tp == 1) ? "visible" : "hidden";
-    bvispi = (rol == "codemaster" && brt > 0 && tp == 3) ? "visible" : "hidden";
-
-    if (blog) { console.log("in procesturn:"); }
-    if (blog) { console.log("brt, rol, tp, bviskl, bvispi, h = " + brt + ", " + rol + ", " + tp + ", " + bviskl + ", " + bvispi + ", " + h1px); }
-
-    if (brt > 0) {
-        brtmin = brt - 1;
-        document.getElementById("knop" + brtmin).style.visibility = "hidden"; 
-    }
-    if (tp == 1 && rol == "codekraker" || tp == 3 && rol == "codemaster") {
-        document.getElementById("knop" + brt).style.visibility = "visible";
-    }            
-
-    document.getElementById("kleurenpalet").style.visibility = bviskl;
-    document.getElementById("kleurenpalet").style.marginTop = h1px;
-    document.getElementById("pinnen").style.visibility = bvispi;
-    document.getElementById("pinnen").style.marginTop = h2px;    
 }
 
 
@@ -150,6 +194,7 @@ function logInit(init) {
     console.log("voornaam = " + voornaam);
     console.log("naam = " + naam);
     console.log("rol = " + rol);
+    console.log("gamestate(0) = " + gamestate0);
 }
 
 function consoleLog(ygsi) {

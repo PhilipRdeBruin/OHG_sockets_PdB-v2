@@ -7,6 +7,8 @@
         $actspelid = $_POST["act_spel"];
         $spelerid = $_POST["speler"];
         $rol = $_POST["rol"];
+        $gamestate0 = $_POST["gamestate"];
+        // phpAlert("gamestate0 = $gamestate0");
 
         $spelnaam = fetch_spel_alias($database, $actspelid);
         $spelerids = fetch_speler_ids($database, $actspelid);
@@ -25,6 +27,7 @@
     <div id="gebrvoornaam" style="display:none"><?php echo $gebr['voornaam'] ?></div>
     <div id="gebrnaam" style="display:none"><?php echo $gebr['naam'] ?></div>
     <div id="rol" style="display:none"><?php echo $rol ?></div>
+    <div id="gamestate0" style="display:none"><?php echo $gamestate0 ?></div>
 
 <?php
     for ($i = 1; $i<=$nsplr; $i++) {

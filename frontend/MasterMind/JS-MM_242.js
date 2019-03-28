@@ -12,7 +12,6 @@ var bauto; var dum;
 var speltype;
 var beurt; var rol; var tp;
 
-// var statusArr2 = new Array;
 var delstat;
 
 var klix = ["red", "#3b91ff", "#39aa39", "yellow", "#f0f0f0", "black", "#ff66d9", "#f60", "#c9f"];
@@ -144,6 +143,7 @@ function drop(ev) {
 	dropitem = ev.target;
 	dropid = dropitem.id;
 	dragj = 0; dropj = 0;
+	nzw = 0; nwi = 0;
 	delstat = 0;
 
 	iix = (dropid.substr(0, 4) == "drop") ? dropid.replace("dropid", "") : dropid.replace("pinid", "");
@@ -173,7 +173,7 @@ function drop(ev) {
 			var jj = dragparent.replace ("dropid", "") ;
 			var j = jj % 10;
 			$("#dropid" + jj).empty();
-			j = (jj[0] == "0") ? jj[1] * 1 : jj * 1;
+			// j = (jj[0] == "0") ? jj[1] * 1 : j * 1;
 			dragj = j;
 			if (beurt == 0) {
 				xgis[j] = 0;
@@ -181,6 +181,39 @@ function drop(ev) {
 				ygis[j] = 0;
 			}
 		}
+	
+		if (statusArr2 != undefined && statusArr2.length > 0) {
+			l = statusArr2.length - 1;
+			beurt = statusArr2[l][1];
+			nzw = (statusArr2[beurt][8] == null) ? 0 : statusArr2[beurt][8];
+			nwi = (statusArr2[beurt][9] == null) ? 0 : statusArr2[beurt][9];
+		} else {
+			l = 0; beurt = 0;
+			nzw = 0; nwi = 0;
+		}
+
+		if (dropid.substr(0, 3) == "pin" && dragid.substr(0, 8) == "zwartwit" && dragparent.substr(0, 3) != "pin") {
+			var jj = dropid.substr(6, 1);
+			var zwwi = dragid.substr(10, 2);
+			var zww = (dragid.length == 11) ? dragid.substr(10, 1) : 0;
+
+			console.log("in drop(ev): dragid = " + dragid + ", dropid = " + dropid + ", zwwi = " + zwwi + ", zww = " + zww);
+
+			zw = (zww >= 1 && zww <= 5) ? 1 : 0;
+			wi = (zww > 5 && zww < 10 || zwwi == 10) ? 1 : 0;
+			nzw = nzw + zw;  
+			nwi = nwi + wi;
+		}
+
+		statusArr2[beurt] = updStatusArr(tp, beurt, dragj, dropj, nzw, nwi, statusArr2);
+
+		if (blog) { console.log("in drop(ev): statusArr2[" + beurt + "] = "); }
+		if (blog) { console.log(statusArr2[beurt]); }
+		if (blog) { console.log("in drop(ev): statusArr2 = "); }
+		if (blog) { console.log(statusArr2); }
+	
+		makeMove(statusArr2);
+	
 	} else {
 		item = (tp == 1 || beurt == 0) ? "rondje" : "pinnetje";
 		if (bauto == 1) {
@@ -190,21 +223,12 @@ function drop(ev) {
 		}
     }
 
-	statusArr2[beurt] = updStatusArr(tp, beurt, dragj, dropj, 0, 0, statusArr2);
-
-	console.log("in drop(ev): statusArr2[" + beurt + "] = ");
-	console.log(statusArr2[beurt]);
-	console.log("in drop(ev): statusArr2 = ");
-	console.log(statusArr2);
-
-    makeMove(statusArr2);
 }
 
 function updStatusArr(tp, brt, dragj, dropj, nzw, nwi, starr) {
 	var statusArr = new Array;
 
 	l = starr.length;
-	// console.log("binnen functie updStatusArr: starr.length = " + l);
 	if (l == 1) {
 		if (starr[0][0] >= 1 && starr[0][0] <= 4) {
 			statusArr = starr[0];
@@ -231,8 +255,8 @@ function updStatusArr(tp, brt, dragj, dropj, nzw, nwi, starr) {
 			}
 		}
 	}
-	statusArr[8] = nzw;
-	statusArr[9] = nwi;
+	if (nzw >= 0) { statusArr[8] = nzw; }
+	if (nwi >= 0) { statusArr[9] = nwi; }
 	statusArr[10] = delstat;
 
 	// document.getElementById("gamestate").innerHTML = JSON.stringify(statusArr);

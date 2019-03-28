@@ -13,14 +13,20 @@ var db = mysql.createConnection({
     database: 'ohg'
 })
 
+var dbx = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    database: 'oudhollandsgamen'
+})
+var tabelx = 'actievespelletjes';
+
+
 // GAME SERVER VARIABLES & FUNCTIONS
 // Games Available Template = Game Name: [Player Count, Initial Game State, Extra player input per turn]
 var gamesAvailable = {
     bke: [2, '[[0,0,0],[0,0,0],[0,0,0]]', 0],
     bke2: [2, '[[0,0,0],[0,0,0],[0,0,0]]', 0],
-    // mastermind: [2, '[[],[],[]]', 0],
     mastermind: [2, '[]', 0],
-    // mastermind: [2, "[[],[],[],[],[],[],[],[],[],[],[]]", 0],
     mejn: [4, '[]', 0],
     mejn2: [2, '[]', 0],
     mejn3: [3, '[]', 0],
@@ -45,6 +51,7 @@ gameserver.on('connection', function(socket) {
         if(Object.keys(gamesAvailable).indexOf(gData.game) !== -1){
             connectedUsers[gData.user] = socket.id;
             var room = gData.game + gData.room;
+            var roomnr = gData.room;
             socket["game"] = gData.game;
             socket["room"] = room;
             var playerAmount = gamesAvailable[gData.game][0];
@@ -98,6 +105,9 @@ gameserver.on('connection', function(socket) {
     socket.on('game move', function(move) {
         if(Object.keys(gamesAvailable).indexOf(socket.game) !== -1){
             room = socket.room;
+            spel = socket.game;
+            roomnr = room.replace(spel, "") * 1;
+            // console.log("nu in server.js / socket.on: room = " + room + ", spel = " + spel + ", roomnr = " + roomnr);
             if (globalGameState[room]["users"][globalGameState[room]["active"]] == socket.username) {
 
                 // GAME SPECIFIC MOVE
@@ -121,6 +131,18 @@ gameserver.on('connection', function(socket) {
                     }
                 })
 
+                // eigen probeersel om naar database OudHollandsGamen te schrijven...
+                    dbx.query(`SELECT * FROM ` + tabelx + ` WHERE id = "${roomnr}"`)
+                    .on('result', function(data){
+                        dbData = data;
+                    })
+                    .on('end', function(){
+                        if(dbData){
+                            dbx.query(`UPDATE ` + tabelx + ` SET gamestate = '${globalGameState[room]['gamestate']}' WHERE id = "${roomnr}"`)
+                        }
+                    })
+                // .....
+
                 // END OF MOVE - SWAP PLAYER
                 if (globalGameState[room]['count'] < gamesAvailable[globalGameState[room]['game']][2]) {
                     globalGameState[room]['count']++
@@ -136,10 +158,30 @@ gameserver.on('connection', function(socket) {
                     gameserver.to(`${sendTo}`).emit('game turn', 1);
                 }
                 // DETECT GAME ENDING
+
+                // gs = JSON.parse(globalGameState[room]['gamestate']);
+                // l = gs.length - 1;
+                // tp = gs[l][0];
+                console.log("nu in server.js / socket.on: glob-gs[0] = " + globalGameState[room]["result"][0] + ", tp = " + tp);
                 if (globalGameState[room]["result"][0] == "gameEnd") {
+                    console.log("Nu: Einde spel gedetecteerd in server.js");
                     gameserver.to(room).emit('game turn', 2);
                     ruleSet.gameEnd(socket, room, globalGameState, server);
                     db.query(`UPDATE ${socket.game} SET winner = '${globalGameState[room]["winner"]}' WHERE room = "${room}"`);
+                    // eigen probeersel om naar database OudHollandsGamen te schrijven...
+                        if (spel == "mastermind") {
+                            console.log("Nu: Einde spel gedetecteerd in server.js/mastermind");
+                            gs = globalGameState[room]['gamestate'];
+                            l = gs.length - 1;
+                            beurt = gs[l][1];
+                            nzw = gs[l][8];
+                            uit = (nzw == 5) ? beurt : beurt * -1;
+                            // dbx.query(`UPDATE ` + tabelx + ` SET winnaar = '${uit}' WHERE id = "${roomnr}"`);
+                            dbx.query(`UPDATE ` + tabelx + ` SET winnaar = '${globalGameState[room]["winner"]}' WHERE id = "${roomnr}"`);
+                        } else {
+                            dbx.query(`UPDATE ` + tabelx + ` SET winnaar = '${globalGameState[room]["winner"]}' WHERE id = "${roomnr}"`);
+                        }
+                        // .....
                     globalGameState[room]['active'] = -1;
                     console.log("game in room '" + room + "' ended");
                 }

@@ -251,16 +251,32 @@
 /* ------------------------------------------ */
 
 #pinnen {
+		position			: relative;
 		margin-left			: 0px;
-		margin-top			: 50px;
+		margin-top			: 0px;
 		width				: 200px;
-		height				: 75px;
+		height				: 95px;
 		border-radius		: 10px;
 		box-shadow			: 20px 20px 15px 10px #aaa;
 		border				: #eee 1px solid;
 		visibility			: hidden;
 		position			: relative;
+		top					: -225px;
 		background			: #984620;
+}
+
+#calcpins {
+		position			: absolute;
+		bottom				: 0;
+		width				: 100%;
+		padding				: 3px;
+		border-radius		: 5px 5px 10px 10px;
+		font-size			: 14px;
+		font-weight			: bold;
+		color				: rgb(200, 220, 255);
+		background			: #007bff;
+		border				: 1px solid #388fec;
+		cursor				: pointer;
 }
 
 .zwartwitrij {
